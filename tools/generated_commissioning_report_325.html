@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commissioning Report - COMMISSIONING FULL TEST 2025-12-14 14:32:34</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2CCCD3;
+            --primary-dark: #254A5D;
+            --secondary: #186C7F;
+            --success: #26989D;
+            --text-dark: #101D20;
+            --text-muted: #6B797D;
+            --bg-light: #f5f7fa;
+        }
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* PDF Page Structure - Each section is a logical page */
+        .pdf-page {
+            background: white;
+            margin: 0 auto 30px;
+            padding: 40px;
+            max-width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* A4 height */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        /* Modern Header */
+        .report-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            margin: -40px -40px 30px -40px;
+            border-radius: 0;
+        }
+
+        .report-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .report-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .report-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-item i {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Section Styling */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        /* Data Grid - Compact and Clean */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .data-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .data-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .data-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        /* Compact Equipment Cards */
+        .equipment-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .equipment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .equipment-badge {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .equipment-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        .equipment-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 13px;
+        }
+
+        .equipment-details>div {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .equipment-details strong {
+            color: var(--text-muted);
+            font-weight: 600;
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        table th {
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            background: white;
+            padding: 15px;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-modern {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary-modern {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 204, 211, 0.3);
+        }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .action-bar,
+            .no-print {
+                display: none !important;
+            }
+
+            .pdf-page {
+                margin: 0;
+                box-shadow: none;
+                page-break-after: always;
+                min-height: 0;
+            }
+
+            .pdf-page:last-child {
+                page-break-after: auto;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+
+        /* Page Break Control */
+        .page-break-before {
+            page-break-before: always;
+            break-before: page;
+        }
+
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Action Bar (screen only) -->
+    <div class="action-bar no-print">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="commissioning_dashboard.php" class="btn btn-outline-secondary btn-modern me-2">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                    <a href="comissionamento.php?report_id=325" class="btn btn-success btn-modern">
+                        <i class="fas fa-edit me-2"></i>Edit Report
+                    </a>
+                </div>
+                <div>
+                    <button id="downloadPdfBtn" class="btn btn-primary-modern">
+                        <i class="fas fa-file-pdf me-2"></i>Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="report-content">
+        <!-- PAGE 1: Cover & General Information -->
+        <div class="pdf-page" data-page="general">
+            <div class="report-header">
+                <h1 class="report-title">
+                    <i class="fas fa-solar-panel me-3"></i>
+                    Commissioning Report
+                </h1>
+                <div class="report-subtitle">COMMISSIONING FULL TEST 2025-12-14 14:32:34</div>
+
+                <div class="report-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <div style="font-size: 11px; opacity: 0.8;">Date</div>
+                            <div style="font-weight: 600;">December 14, 2025</div>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-hashtag"></i>
+                        <div>
+                            <div style="font-size: 11px; opacity: 0.8;">Report ID</div>
+                            <div style="font-weight: 600;">COM-00325</div>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <div style="font-size: 11px; opacity: 0.8;">Location</div>
+                            <div style="font-weight: 600;">Test Plant 1, Industrial Park</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                General Information
+            </h2>
+
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">Project Name</div>
+                    <div class="data-value">COMMISSIONING FULL TEST 2025-12-14 14:32:34</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Plant Location</div>
+                    <div class="data-value">Test Plant 1, Industrial Park</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">GPS Coordinates</div>
+                    <div class="data-value">40.2701,-8.1077</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">CPE</div>
+                    <div class="data-value">CPE-12345</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Installed Power (kWp)</div>
+                    <div class="data-value">60.50 kWp</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Total Power (kWp)</div>
+                    <div class="data-value">61.00 kWp</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Certified Power (kWp)</div>
+                    <div class="data-value">59.80 kWp</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Commissioning Responsible</div>
+                    <div class="data-value">Tiago França</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">EPC Company</div>
+                    <div class="data-value">-</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Representative</div>
+                    <div class="data-value">
+                                                    -
+                                            </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Responsible Person</div>
+                    <div class="data-value">Commission Tester</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Technician</div>
+                    <div class="data-value">Tech Unit 1</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: PV Modules & System Layout -->
+        <div class="pdf-page page-break-before" data-page="pv-modules">
+            <h2 class="section-title">
+                <i class="fas fa-solar-panel"></i>
+                PV Modules
+            </h2>
+
+                            
+                <div class="equipment-item" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-left-color: #2196F3;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Total Modules:</strong> 1 groups
+                        </div>
+                        <div>
+                            <strong>Aggregate Power:</strong> 60.800 kW
+                        </div>
+                    </div>
+                </div>
+
+                                                        <div class="equipment-item avoid-break">
+                        <div class="equipment-header">
+                            <div class="equipment-badge">160</div>
+                            <div class="equipment-name">
+                                ModuleBrand M-380                            </div>
+                        </div>
+                        <div class="equipment-details">
+                            <div>
+                                <strong>Model</strong>
+                                M-380                            </div>
+                            <div>
+                                <strong>Manufacturer</strong>
+                                ModuleBrand                            </div>
+                            <div>
+                                <strong>Power (per module)</strong>
+                                0.380 kW
+                            </div>
+                            <div>
+                                <strong>Total Power (group)</strong>
+                                60.800 kW
+                            </div>
+                        </div>
+                    </div>
+                            
+                    </div>
+
+        <!-- PAGE 3: Inverters -->
+                    <div class="pdf-page page-break-before" data-page="inverters">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Inverters
+                </h2>
+
+                                                        <div class="equipment-item avoid-break">
+                        <div class="equipment-header">
+                            <div class="equipment-badge">1</div>
+                            <div class="equipment-name">
+                                InverterBrand I-50kW                            </div>
+                                                            <span class="badge bg-success" style="padding: 4px 12px;">
+                                    New                                </span>
+                                                    </div>
+                        <div class="equipment-details">
+                            <div>
+                                <strong>Brand</strong>
+                                InverterBrand                            </div>
+                            <div>
+                                <strong>Model</strong>
+                                I-50kW                            </div>
+                            <div>
+                                <strong>Quantity</strong>
+                                1                            </div>
+                                                            <div>
+                                    <strong>Serial Number</strong>
+                                    SN123                                </div>
+                                                                                        <div>
+                                    <strong>Location</strong>
+                                    Inverter room                                </div>
+                                                                                        <div>
+                                    <strong>Max Output Current</strong>
+                                    100                                </div>
+                                                    </div>
+                    </div>
+                            </div>
+        
+        <!-- PAGE 4: MPPT Measurements (if any) -->
+        
+        <!-- PAGE 5: Protection (if any) -->
+                    <div class="pdf-page page-break-before" data-page="protection">
+                <h2 class="section-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Protection Systems
+                </h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scope</th>
+                            <th>Brand</th>
+                            <th>Model</th>
+                            <th>Rated Current (A)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                                                <tr class="avoid-break">
+                                <td>-</td>
+                                <td>BrandA</td>
+                                <td>CB-200</td>
+                                <td>63.00</td>
+                            </tr>
+                                            </tbody>
+                </table>
+            </div>
+            </div>
+
+    <!-- PDF Export Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        document.getElementById('downloadPdfBtn').addEventListener('click', async function() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pages = document.querySelectorAll('.pdf-page');
+            const reportId = 'COM-00325';
+            const project = 'COMMISSIONING_FULL_TEST_2025-12-14_14_32_34';
+
+            for (let i = 0; i < pages.length; i++) {
+                if (i > 0) pdf.addPage();
+
+                const canvas = await html2canvas(pages[i], {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#FFFFFF'
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+
+                pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+            }
+
+            pdf.save(`Commissioning_Report_${project}_${reportId}.pdf`);
+        });
+    </script>
+</body>
+
+</html>

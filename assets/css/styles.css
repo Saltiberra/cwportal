@@ -1,0 +1,402 @@
+/**
+ * Main Styles for PV Commissioning System
+ * 
+ * This file contains the custom styling for the entire application
+ * 
+ * Color Palette: Cleanwatts Branding
+ * - Main Color: #2CCCD3 (Turquoise - energy, sophistication, creativity)
+ * - Dark Shades: #254A5D, #101D20 (Professional, elegant)
+ * - Secondary Palette: Various teal and blue-green shades
+ * - Philosophy: Refreshing, natural, sophisticated, balanced
+ */
+
+/* Notification animation keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Highlight animation for new cards - Updated with Cleanwatts colors */
+@keyframes highlightCard {
+    0% {
+        box-shadow: 0 0 0 0 rgba(44, 204, 211, 0.7);
+    }
+
+    /* Cleanwatts turquoise */
+    70% {
+        box-shadow: 0 0 0 15px rgba(44, 204, 211, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(44, 204, 211, 0);
+    }
+}
+
+.highlight-new-card {
+    animation: highlightCard 1.5s ease-in-out;
+    transition: all 0.3s ease;
+    transform-origin: center center;
+}
+
+.highlight-new-card .card {
+    border: 2px solid var(--primary-color) !important;
+    /* Using Cleanwatts primary */
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+:root {
+    /* Cleanwatts Main Color Palette */
+    --primary-color: #2CCCD3;
+    /* Cleanwatts Turquoise - main brand color */
+    --primary-light: #89D1D7;
+    /* Lighter turquoise for backgrounds */
+    --primary-dark: #254A5D;
+    /* Dark blue-green for headers */
+    --primary-darker: #101D20;
+    /* Darkest shade for text/accents */
+
+    /* Cleanwatts Secondary Color Palette */
+    --secondary-color: #186C7F;
+    /* Mid-tone blue-green */
+    --secondary-light: #ABDBDE;
+    /* Very light turquoise */
+    --secondary-medium: #B5CBD1;
+    /* Neutral light blue-gray */
+    --secondary-dark: #6B797D;
+    /* Dark gray-blue */
+
+    /* Additional Cleanwatts Colors */
+    --cleanwatts-teal: #26989D;
+    /* Medium teal */
+    --cleanwatts-cyan: #1BA5B7;
+    /* Bright cyan */
+    --cleanwatts-neutral: #ADBDC4;
+    /* Neutral blue-gray */
+
+    /* Status Colors (kept for functionality) */
+    --success-color: #26989D;
+    /* Using Cleanwatts teal for success */
+    --info-color: #1BA5B7;
+    /* Using Cleanwatts cyan for info */
+    --warning-color: #ffc107;
+    /* Keep standard warning color */
+    --danger-color: #dc3545;
+    /* Keep standard danger color */
+
+    /* Neutral Colors (updated to align with Cleanwatts palette) */
+    --light-gray: #ABDBDE;
+    /* Using Cleanwatts light turquoise */
+    --medium-gray: #B5CBD1;
+    /* Using Cleanwatts neutral */
+    --dark-gray: #254A5D;
+    /* Using Cleanwatts dark blue-green */
+
+    /* Font Sizes */
+    --font-size-small: 0.875rem;
+    --font-size-normal: 1rem;
+    --font-size-medium: 1.25rem;
+    --font-size-large: 1.5rem;
+    --font-size-xlarge: 2rem;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2.5rem;
+
+    /* Borders */
+    --border-radius: 0.25rem;
+    --border-width: 1px;
+}
+
+/* General Body Styling */
+body {
+    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-gray);
+    background-color: #f5f7fa;
+}
+
+/* =============================
+   Reusable Section Header Pattern
+   ============================= */
+.section-header-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.section-header-inline .section-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.section-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    flex: 0 0 48px;
+    font-size: 1.25rem;
+}
+
+/* Variant modifiers */
+.section-icon-box.success {
+    background: linear-gradient(135deg, var(--success-color) 0%, var(--primary-dark) 100%);
+}
+
+.section-icon-box.warning {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #c28a00 100%);
+}
+
+.section-icon-box.info {
+    background: linear-gradient(135deg, var(--info-color) 0%, var(--primary-dark) 100%);
+}
+
+.section-icon-box.neutral {
+    background: linear-gradient(135deg, var(--medium-gray) 0%, var(--dark-gray) 100%);
+}
+
+/* Compact variation for h4/h5 sub-sections */
+.section-header-inline.compact .section-icon-box {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+@media (max-width: 576px) {
+    .section-header-inline {
+        gap: 10px;
+    }
+
+    .section-icon-box {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+    }
+
+    .section-header-inline.compact .section-icon-box {
+        width: 36px;
+        height: 36px;
+        flex: 0 0 36px;
+    }
+}
+
+/* Navbar Customization */
+.navbar-dark.bg-primary {
+    background: linear-gradient(to right, var(--primary-dark), var(--primary-color)) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 0 !important;
+    /* remove rounding */
+}
+
+/* Ensure navbar is straight-edged and overrides any pseudo-elements */
+.navbar,
+.navbar .container-fluid,
+.navbar .navbar-brand,
+.navbar .navbar-brand img,
+.navbar::before,
+.navbar::after,
+.navbar .navbar-brand::before,
+.navbar .navbar-brand::after {
+    border-radius: 0 !important;
+    clip-path: none !important;
+    mask: none !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Card Styling */
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: var(--spacing-lg);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    background: linear-gradient(to right, var(--primary-light), var(--primary-color));
+    color: white;
+    font-weight: 600;
+    border-bottom: none;
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+/* Form Elements */
+.form-control:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(2, 117, 216, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn {
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--border-radius);
+    transition: all 0.2s;
+}
+
+/* Navigation Tabs Styling */
+.nav-tabs .nav-link {
+    color: var(--secondary-color);
+    border: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--secondary-color);
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-color);
+}
+
+.nav-tabs .nav-link.active {
+    color: #ffffff;
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.nav-tabs .nav-link.active:hover {
+    color: #ffffff;
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Custom Success Button Styling - Cleanwatts Colors */
+.btn-success {
+    background-color: var(--cleanwatts-teal) !important;
+    border-color: var(--cleanwatts-teal) !important;
+    color: #ffffff !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 0.2rem rgba(38, 152, 157, 0.25) !important;
+}
+
+/* Section Styles */
+.section-heading {
+    border-left: 4px solid var(--primary-color);
+    padding-left: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    font-weight: 600;
+}
+
+/* Table Styling */
+.table {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    border-bottom: none;
+}
+
+/* Footer Customization */
+.footer {
+    background-color: var(--light-gray);
+    border-top: 1px solid var(--medium-gray);
+    font-size: var(--font-size-small);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-header {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .section-heading {
+        font-size: var(--font-size-medium);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        font-size: 12pt;
+        background-color: white;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .card {
+        break-inside: avoid;
+        border: 1px solid #ddd;
+        box-shadow: none;
+    }
+
+    .table th,
+    .table td {
+        background-color: white !important;
+        color: black !important;
+    }
+}

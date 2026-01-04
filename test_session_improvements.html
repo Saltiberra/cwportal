@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Sessão Expirada</title>
+</head>
+
+<body>
+    <h1>Teste das Melhorias de Sessão</h1>
+    <p>As melhorias implementadas incluem:</p>
+    <ul>
+        <li>✅ Mensagens de erro mais claras quando a sessão expira</li>
+        <li>✅ Confirmação para redirecionar ao login</li>
+        <li>✅ Verificação periódica de sessão (a cada 5 minutos)</li>
+        <li>✅ Endpoint check_session.php para verificar status</li>
+    </ul>
+
+    <p><strong>Para testar:</strong></p>
+    <ol>
+        <li>Faça login no sistema</li>
+        <li>Vá para uma página de site survey</li>
+        <li>Espere a sessão expirar (cerca de 24 minutos) ou force expirando a sessão</li>
+        <li>Tente editar algo - deve aparecer uma mensagem clara</li>
+    </ol>
+
+    <p><a href="index.php">Voltar ao Dashboard</a></p>
+
+    <script>
+        // Simular uma chamada que falha por sessão expirada
+        function testSessionExpired() {
+            // Simular resposta HTML em vez de JSON
+            const mockResponse = new Response('<html><body>Login Page</body></html>', {
+                status: 302,
+                headers: { 'content-type': 'text/html' }
+            });
+
+            // Testar o tratamento de erro
+            const contentType = mockResponse.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                if (mockResponse.status === 302 || mockResponse.status === 401 || mockResponse.redirected) {
+                    alert('🔐 Sessão expirada - faça login novamente\n\nIsso seria mostrado ao usuário quando a sessão expirar.');
+                    const shouldLogin = confirm('Sua sessão expirou. Você precisa fazer login novamente para continuar salvando.\n\nDeseja ir para a página de login agora?');
+                    if (shouldLogin) {
+                        // window.location.href = 'login.php';
+                        alert('Redirecionaria para login.php');
+                    }
+                }
+            }
+        }
+
+        // Testar verificação periódica
+        setTimeout(() => {
+            alert('Verificação periódica de sessão ativada!\nA cada 5 minutos o sistema verifica se você ainda está logado.');
+        }, 2000);
+    </script>
+</body>
+
+</html>

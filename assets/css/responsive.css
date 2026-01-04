@@ -1,0 +1,229 @@
+/* Responsive helpers for mobile friendliness */
+:root {
+    --container-max: 1300px;
+}
+
+/* Main content container: max width + centered on large screens */
+.main-content-container {
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* Table fallback: make tables scrollable on mobile */
+.table-wrapper {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+}
+
+/* Improve touch targets */
+@media (max-width: 768px) {
+    .btn {
+        min-height: 44px;
+        padding: 10px 14px;
+        font-size: 16px;
+    }
+
+    .nav-link,
+    .dropdown-item {
+        padding: 8px 12px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+
+    .modal-dialog {
+        margin: 0 8px;
+    }
+}
+
+/* Tweaks for small devices */
+@media (max-width: 576px) {
+    .main-content-container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table tbody tr {
+        display: block;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 8px;
+    }
+
+    .table tbody td {
+        display: block;
+        padding: 6px 8px;
+    }
+}
+
+/* Calendar buttons and nav tweaks for mobile */
+@media (max-width: 576px) {
+    .calendar-nav-btn {
+        padding: 8px 10px;
+        min-height: 44px;
+    }
+
+    .calendar-controls .btn {
+        padding: 8px 12px;
+    }
+
+    .calendar-title {
+        font-size: 1rem;
+    }
+}
+
+/* Modals fullscreen for small devices */
+@media (max-width: 576px) {
+    .modal-dialog {
+        max-width: 100% !important;
+        width: auto;
+        margin: 0.5rem;
+    }
+
+    .modal-content {
+        height: 100%;
+        min-height: 80vh;
+        border-radius: 8px;
+        overflow: auto;
+    }
+}
+
+/* Make images responsive */
+.img-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Make inputs more touch friendly */
+input[type="number"],
+input[type="text"],
+textarea,
+select {
+    touch-action: manipulation;
+}
+
+/* Hide number input spin buttons for touch devices where undesirable */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* String measurement table - mobile reflow (stacked rows) */
+@media (max-width: 768px) {
+    .string-measurement-table .table {
+        border: 0;
+    }
+
+    .string-measurement-table .table thead {
+        display: none;
+    }
+
+    .string-measurement-table .table tbody tr {
+        display: block;
+        border: 1px solid #e9ecef;
+        margin-bottom: 8px;
+        padding: 8px;
+        border-radius: 6px;
+        background: #fff;
+    }
+
+    .string-measurement-table .table tbody tr td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 6px !important;
+        border: 0;
+    }
+
+    .string-measurement-table .table tbody tr td:first-child {
+        font-weight: 600;
+        width: 28px;
+    }
+
+    .string-measurement-table .table tbody tr td input.form-control {
+        width: 100%;
+        max-width: 120px;
+    }
+
+    .string-measurement-table .table tbody tr td .small {
+        display: none;
+    }
+
+    /* MPPT card view (JS toggle/semantic display) */
+    .mppt-card-list {
+        display: block;
+    }
+
+    .mppt-string-card {
+        border: 1px solid #e9ecef;
+        margin-bottom: 10px;
+        padding: 8px;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .mppt-string-card .kv {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .mppt-string-card .k {
+        font-weight: 600;
+        color: #333;
+        min-width: 70px;
+    }
+
+    .mppt-string-card .v {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .mppt-view-toggle {
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .mppt-global-toggle {
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .mppt-global-toggle i {
+        width: 16px;
+    }
+
+    /* Copy button & highlight */
+    .copy-prev-row i {
+        width: 14px;
+    }
+
+    .copy-row-highlight {
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.12) inset;
+        transition: box-shadow 0.25s ease;
+    }
+
+    .mppt-view-toggle {
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+}

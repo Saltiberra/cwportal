@@ -1,0 +1,411 @@
+/**
+ * PUNCH LIST WIDGET STYLES
+ * 
+ * Estilos específicos para o widget de punch lists no dashboard
+ */
+
+/* Punch List Container */
+.punch-list-widget {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.punch-list-widget .card {
+    border: none;
+    box-shadow: none;
+    border-radius: 12px;
+}
+
+/* Punch List Header */
+.punch-list-header {
+    border-bottom: 2px solid #2CCCD3;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.punch-list-header h5 {
+    color: #1a535c;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.punch-list-header h5 i {
+    color: #2CCCD3;
+}
+
+.punch-list-header .badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+/* Punch List Search and Filter */
+#punch-search,
+#punch-severity-filter {
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+    transition: all 0.3s ease;
+}
+
+#punch-search:focus,
+#punch-severity-filter:focus {
+    border-color: #2CCCD3;
+    box-shadow: 0 0 8px rgba(44, 204, 211, 0.2);
+}
+
+/* Punch List Table */
+.punch-list-table {
+    background: white;
+    border-collapse: collapse;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.punch-list-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.punch-list-table thead th {
+    color: #495057;
+    font-weight: 600;
+    padding: 12px 15px;
+    border: none;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.punch-list-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s ease;
+}
+
+.punch-list-table tbody tr:hover {
+    background-color: #f0f8f9;
+}
+
+.punch-list-table tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+.punch-list-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* Punch Item Row */
+.punch-item {
+    cursor: pointer;
+}
+
+.punch-item strong {
+    color: #1a535c;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.punch-item .text-muted {
+    color: #6c757d !important;
+}
+
+/* Badge Styles */
+.badge-danger,
+.bg-danger {
+    background-color: #dc3545 !important;
+    color: white;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge-warning,
+.bg-warning {
+    background-color: #fd7e14 !important;
+    color: white;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge-info,
+.bg-info {
+    background-color: #17a2b8 !important;
+    color: white;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge-success,
+.bg-success {
+    background-color: #28a745 !important;
+    color: white;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* Assigned-to badge (teal) to match PDF and web UI */
+.badge-assigned,
+.bg-assigned {
+    background-color: #2CCCD3 !important;
+    color: white;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge-secondary,
+.bg-secondary {
+    background-color: #6c757d !important;
+    color: white;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge-primary,
+.bg-primary {
+    background-color: #0d6efd !important;
+    color: white;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* Action Buttons */
+.btn-group-sm {
+    gap: 2px;
+}
+
+.punch-close,
+.punch-view {
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.punch-close:hover {
+    background-color: #28a745 !important;
+    color: white !important;
+    border-color: #28a745 !important;
+    transform: scale(1.05);
+}
+
+.punch-view:hover {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+    transform: scale(1.05);
+}
+
+/* Statistics Box */
+.punch-list-stats {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.stat-box {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.stat-box h6 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.stat-box small {
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+/* Empty State */
+.alert-success {
+    border-radius: 8px;
+    border: 2px solid #28a745;
+    background-color: #f8fdf9;
+    color: #155724;
+}
+
+/* Punch action buttons layout inside the form */
+.punch-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+}
+
+.punch-actions .btn {
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* On very small screens allow wrapping vertically */
+@media (max-width: 576px) {
+    .punch-actions {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .punch-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Compact action buttons in punch list table */
+.punch-list-table td .punch-action-btn {
+    padding: 0.18rem 0.36rem;
+    font-size: 0.78rem;
+    line-height: 1;
+    min-width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+/* Slight increase spacing between side-by-side action buttons */
+.punch-list-table td .punch-action-btn+.punch-action-btn {
+    margin-left: 0.25rem;
+}
+
+/* Ensure small screens keep them side-by-side when possible */
+@media (max-width: 480px) {
+    .punch-list-table td .punch-action-btn {
+        min-width: 30px;
+        height: 30px;
+        font-size: 0.72rem;
+    }
+}
+
+.alert-success i {
+    color: #28a745;
+    font-size: 32px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.alert-success h5 {
+    color: #155724;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.alert-success p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .punch-list-table {
+        font-size: 12px;
+    }
+
+    .punch-list-table thead th {
+        padding: 8px 10px;
+        font-size: 10px;
+    }
+
+    .punch-list-table tbody td {
+        padding: 8px 10px;
+    }
+
+    .btn-group-sm {
+        flex-wrap: wrap;
+    }
+
+    .stat-box h6 {
+        font-size: 18px;
+    }
+
+    .stat-box small {
+        font-size: 10px;
+    }
+}
+
+/* Animation for loading */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.punch-list-loading {
+    animation: pulse 2s infinite;
+}
+
+/* Punch List Scrollable */
+.punch-list-scrollable {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.punch-list-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.punch-list-scrollable::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.punch-list-scrollable::-webkit-scrollbar-thumb {
+    background: #2CCCD3;
+    border-radius: 10px;
+}
+
+.punch-list-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #1fb7b8;
+}
+
+.punch-list-scrollable {
+    scrollbar-color: #2CCCD3 #f1f1f1;
+    scrollbar-width: thin;
+}
+
+/* Print Styles */
+@media print {
+    .punch-list-header {
+        page-break-inside: avoid;
+    }
+
+    .punch-list-table {
+        page-break-inside: avoid;
+    }
+
+    .btn-group {
+        display: none;
+    }
+}

@@ -1,0 +1,25 @@
+# AJAX folder - Allow all access
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+# Allow .php files to execute
+<IfModule mod_mime.c>
+    AddType application/x-httpd-php .php
+</IfModule>
+
+Options +FollowSymLinks
+
+# CORS headers for AJAX requests
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
+
+# Allow direct access to all PHP files
+<FilesMatch "\.php$">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+</FilesMatch>

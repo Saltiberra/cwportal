@@ -1,0 +1,507 @@
+/**
+ * Cleanwatts Portal - Calendar Styles
+ * TOAST UI Calendar customization
+ * Dezembro 2025
+ */
+
+/* ============================================
+   Container e Layout
+   ============================================ */
+.calendar-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin-top: 40px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.calendar-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.calendar-title i {
+    color: #2CCCD3;
+}
+
+/* ============================================
+   Navegação do Calendário
+   ============================================ */
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.calendar-nav-btn {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #495057;
+}
+
+.calendar-nav-btn:hover {
+    background: #e9ecef;
+    border-color: #ced4da;
+}
+
+.calendar-nav-btn.active {
+    background: #2CCCD3;
+    border-color: #2CCCD3;
+    color: #fff;
+}
+
+.calendar-current-date {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    min-width: 180px;
+    text-align: center;
+}
+
+/* ============================================
+   Filtros e Controlos
+   ============================================ */
+.calendar-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.calendar-filter-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.calendar-filter-btn.active {
+    border-color: currentColor;
+}
+
+.filter-all {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.filter-commissioning {
+    background: rgba(44, 204, 211, 0.15);
+    color: #2CCCD3;
+}
+
+.filter-site_survey {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+
+.filter-field_supervision {
+    background: rgba(253, 126, 20, 0.15);
+    color: #fd7e14;
+}
+
+/* ============================================
+   Container do Calendário TOAST UI
+   ============================================ */
+#calendar-container {
+    border-radius: 8px;
+}
+
+/* Override TOAST UI styles */
+.toastui-calendar-day-name {
+    background: #f8f9fa !important;
+}
+
+.toastui-calendar-weekday-event-title,
+.toastui-calendar-weekday-schedule-title {
+    font-weight: 500 !important;
+}
+
+.toastui-calendar-month-dayname {
+    border-bottom: 2px solid #2CCCD3 !important;
+}
+
+/* ============================================
+   Month View - Event Bars/Banners
+   ============================================ */
+
+/* Make month grid cells taller to show full event text */
+.toastui-calendar-month .toastui-calendar-grid-cell {
+    min-height: 120px !important;
+}
+
+/* Style events as bars in month view - allow text wrap */
+.toastui-calendar-weekday-event-block {
+    border-radius: 4px !important;
+    padding: 3px 6px !important;
+    margin: 2px 3px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 20px !important;
+    line-height: 1.3 !important;
+    max-height: none !important;
+}
+
+/* Event title wrapper */
+.toastui-calendar-weekday-event-title {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: block !important;
+    line-height: 1.3 !important;
+}
+
+/* Horizontal events container */
+.toastui-calendar-weekday-events {
+    overflow: visible !important;
+}
+
+/* Grid row height */
+.toastui-calendar-month .toastui-calendar-grid-row {
+    min-height: 100px !important;
+}
+
+/* More events link */
+.toastui-calendar-month-more-events,
+.toastui-calendar-weekday-exceed-in-month {
+    color: #2CCCD3 !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    font-size: 11px !important;
+}
+
+/* ============================================
+   Legenda de Cores
+   ============================================ */
+.calendar-legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e9ecef;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+}
+
+.legend-commissioning {
+    background: #2CCCD3;
+}
+
+.legend-site_survey {
+    background: #28a745;
+}
+
+.legend-field_supervision {
+    background: #fd7e14;
+}
+
+.legend-other {
+    background: #6c757d;
+}
+
+/* ============================================
+   Modal de Evento
+   ============================================ */
+.schedule-modal .modal-header {
+    background: linear-gradient(135deg, #2CCCD3 0%, #1a9ca3 100%);
+    color: #fff;
+    border-radius: 12px 12px 0 0;
+}
+
+.schedule-modal .modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.schedule-modal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-modal .form-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.schedule-modal .form-control,
+.schedule-modal .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 14px;
+}
+
+.schedule-modal .form-control:focus,
+.schedule-modal .form-select:focus {
+    border-color: #2CCCD3;
+    box-shadow: 0 0 0 3px rgba(44, 204, 211, 0.15);
+}
+
+/* Event Type Colors in Form */
+.event-type-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-type-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   Botão Adicionar Evento
+   ============================================ */
+.btn-add-event {
+    background: linear-gradient(135deg, #2CCCD3 0%, #1a9ca3 100%);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-add-event:hover {
+    background: linear-gradient(135deg, #1a9ca3 0%, #158a90 100%);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 204, 211, 0.3);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .calendar-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .calendar-nav {
+        justify-content: center;
+    }
+
+    .calendar-controls {
+        justify-content: center;
+    }
+
+    #calendar-container {
+        min-height: 500px;
+    }
+
+    .calendar-legend {
+        justify-content: center;
+    }
+}
+
+/* ============================================
+   Week/Day View - Time Events (vertical bars)
+   ============================================ */
+
+/* Make time event blocks show full title
+   Use the actual TOAST UI class names and ensure text can wrap */
+.toastui-calendar-event-time {
+    overflow: visible !important;
+}
+
+/* Target the content and title elements inside a time event */
+.toastui-calendar-event-time .toastui-calendar-event-time-content,
+.toastui-calendar-event-title,
+.toastui-calendar-event-time .toastui-calendar-event-title {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    line-height: 1.2 !important;
+    font-size: 11px !important;
+    padding: 2px 6px !important;
+}
+
+/* Ensure the content expands and takes full width inside the time block */
+.toastui-calendar-event-time .toastui-calendar-event-time-content {
+    display: block !important;
+    width: 100% !important;
+}
+
+/* On hover, make sure the full title is visible even if the block is small */
+.toastui-calendar-event-time:hover .toastui-calendar-event-time-content,
+.toastui-calendar-weekday-event:hover .toastui-calendar-weekday-event-title,
+.toastui-calendar-weekday-event:hover .toastui-calendar-weekday-event-block {
+    white-space: normal !important;
+    overflow: visible !important;
+    z-index: 9999 !important;
+}
+
+/* Reduce dot spacing inside event to give more room to title */
+.toastui-calendar-event-time .toastui-calendar-weekday-event-dot,
+.toastui-calendar-event-time .toastui-calendar-event-dot {
+    display: inline-block !important;
+    width: 8px !important;
+    height: 8px !important;
+    margin-right: 6px !important;
+    vertical-align: top !important;
+}
+
+.toastui-calendar-event-time .toastui-calendar-event-content,
+.toastui-calendar-event-time .toastui-calendar-event-body,
+.toastui-calendar-event-time .toastui-calendar-event-time-content {
+    padding-left: 2px !important;
+}
+
+/* Event block in week view */
+.toastui-calendar-weekday-event,
+.toastui-calendar-event-time {
+    overflow: visible !important;
+}
+
+/* Time grid event */
+.toastui-calendar-time-date-schedule-block-wrap {
+    overflow: visible !important;
+}
+
+/* ============================================
+   Loading State
+   ============================================ */
+.calendar-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    color: #6c757d;
+}
+
+.calendar-loading .spinner-border {
+    color: #2CCCD3;
+}
+
+/* ============================================
+   Empty State
+   ============================================ */
+.calendar-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.calendar-empty i {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 16px;
+}
+
+.calendar-empty h5 {
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+/* ============================================
+   List view styles
+   ============================================ */
+.calendar-list {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+#schedule-list-table tbody tr td {
+    vertical-align: middle;
+}
+
+#schedule-list-table td .btn {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    #schedule-list-table thead {
+        display: none;
+    }
+
+    #schedule-list-table tbody td {
+        display: block;
+        width: 100%;
+    }
+
+    #schedule-list-table tbody td:first-child {
+        text-align: left;
+    }
+}
+
+/* Removed project overlay label and overflow overrides - reverting to prior behavior */
+/* Compact view: reduce event padding and font-size to show more text */
+.compact-view .toastui-calendar-weekday-event-title,
+.compact-view .toastui-calendar-event-time .toastui-calendar-event-time-content,
+.compact-view .toastui-calendar-event-title {
+    font-size: 10px !important;
+    padding: 2px 4px !important;
+    line-height: 1.1 !important;
+}
+
+/* Hide dot to give more room */
+.compact-view .toastui-calendar-weekday-event-dot,
+.compact-view .toastui-calendar-event-dot {
+    display: none !important;
+}
+
+/* Slightly reduce border radius and margins for compactness */
+.compact-view .toastui-calendar-weekday-event-block,
+.compact-view .toastui-calendar-panel-event-wrapper .toastui-calendar-weekday-event {
+    margin: 1px 2px !important;
+    border-radius: 3px !important;
+}
+
+/* Make sure the grid still allows visible content */
+.compact-view .toastui-calendar-weekday-events,
+.compact-view .toastui-calendar-timegrid .toastui-calendar-column {
+    overflow: visible !important;
+}

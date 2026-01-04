@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Survey Report - Relatório A</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2CCCD3;
+            --primary-dark: #254A5D;
+            --secondary: #186C7F;
+            --success: #26989D;
+            --text-dark: #101D20;
+            --text-muted: #6B797D;
+            --bg-light: #f5f7fa;
+        }
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* PDF Page Structure */
+        .pdf-page {
+            background: white;
+            margin: 0 auto 30px;
+            padding: 40px;
+            max-width: 210mm;
+            min-height: 297mm;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        /* Modern Header */
+        .report-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            margin: -40px -40px 30px -40px;
+            border-radius: 0;
+        }
+
+        .report-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .report-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .report-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-item i {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Section Styling */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        /* Data Grid */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Equipment/Group Cards (matching commissioning layout) */
+        .equipment-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .equipment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .equipment-badge {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Modern action buttons for download */
+        .btn-modern {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary-modern {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .data-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .data-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .data-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        /* Table Styling */
+        .report-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .report-table th {
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .report-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 12px;
+        }
+
+        .report-table tr:nth-child(even) {
+            background-color: var(--bg-light);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-badge.warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Page Break */
+        @media print {
+            .pdf-page {
+                page-break-after: always;
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+
+        /* continuous view overrides (for screen only) */
+        body.continuous .pdf-page {
+            max-width: 100%;
+            min-height: auto;
+            margin: 10px 0;
+            padding: 18px 20px;
+            box-shadow: none;
+            page-break-after: auto;
+            /* no forced breaks when viewing on-screen */
+        }
+
+        /* ensure table rows and blocks don't split when printing */
+        .report-table tr,
+        .report-table td,
+        .data-item,
+        .data-grid,
+        .avoid-break {
+            -webkit-column-break-inside: avoid;
+            -moz-column-break-inside: avoid;
+            -webkit-break-inside: avoid;
+            -moz-break-inside: avoid;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* Footer */
+        .report-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Download/Print Button (no-print: removed when generating server PDF) -->
+    <div class="print-button no-print">
+        <a href="comissionamento.php?report_id=1" class="btn btn-success btn-modern me-2" title="Edit Report">
+            <i class="fas fa-edit me-2"></i>Edit Report
+        </a>
+        <button class="btn btn-primary-modern btn-modern" id="downloadPdfBtn" title="Download PDF">
+            <i class="fas fa-file-download me-2"></i>Download PDF
+        </button>
+    </div>
+
+    <!-- Page 1: Cover & General Information -->
+    <div class="pdf-page">
+        <div class="report-header">
+            <div class="report-title">
+                <i class="fas fa-map-location-dot me-2"></i>Site Survey Report
+            </div>
+            <div class="report-subtitle">Pre-Installation Assessment & Analysis</div>
+
+            <div class="report-meta">
+                <div class="meta-item">
+                    <i class="fas fa-building"></i>
+                    <span>Relatório A</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>November 5, 2025</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span>Ruben Lopes</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">
+            <i class="fas fa-info-circle"></i>General Information
+        </h2>
+
+        <div class="data-grid">
+            <div class="data-item avoid-break">
+                <div class="data-label">Project Name</div>
+                <div class="data-value">Relatório A</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Date</div>
+                <div class="data-value">November 5, 2025</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Responsible Person</div>
+                <div class="data-value">Ruben Lopes</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Survey Location</div>
+                <div class="data-value">Test Location</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">GPS Coordinates</div>
+                <div class="data-value">Debug Test Project</div>
+            </div>
+        </div>
+
+            </div>
+
+    <!-- Page 2: Installation Site & Buildings -->
+            <div class="pdf-page">
+            <h2 class="section-title">
+                <i class="fas fa-building"></i>Installation Site - Buildings
+            </h2>
+
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Building Name</th>
+                        <th>Parapet Height (m)</th>
+                        <th>Mount Location</th>
+                        <th>Roof Type</th>
+                        <th>Support Structure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                            <tr class="avoid-break">
+                            <td>Lorem ipsum dolor sit amet</td>
+                            <td>123.00</td>
+                            <td>Pitched Roof</td>
+                            <td>Ceramic Tile - Lusa</td>
+                            <td>Concrete Beams</td>
+                        </tr>
+                                    </tbody>
+            </table>
+        </div>
+    
+    <!-- Installation Site Additional Details -->
+    <div class="pdf-page">
+        <h2 class="section-title">
+            <i class="fas fa-building me-2"></i>Installation Site - Additional Details
+        </h2>
+        <div class="data-grid">
+            <div class="data-item avoid-break">
+                <div class="data-label">Is there access to the roof?</div>
+                <div class="data-value">-</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Feasible to install a permanent ladder?</div>
+                <div class="data-value">-</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Installation Site Observations</div>
+                <div class="data-value">Lorem ipsum dolor sit amet</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Notes moved to end of document -->
+
+    <!-- Page 3: Roof Details -->
+            <div class="pdf-page">
+            <h2 class="section-title">
+                <i class="fas fa-warehouse"></i>Roof Details & Condition Assessment
+            </h2>
+
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Building</th>
+                        <th>Roof ID</th>
+                        <th>Pitch Angle</th>
+                        <th>Orientation</th>
+                        <th>Condition</th>
+                        <th>Structure Visual</th>
+                        <th>Expert Assessment Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                            <tr class="avoid-break">
+                            <td>Lorem ipsum dolor sit amet</td>
+                            <td>123</td>
+                            <td>123.00</td>
+                            <td>123</td>
+                            <td>
+                                <span class="status-badge info">
+                                    3                                </span>
+                            </td>
+                            <td>OK</td>
+                            <td>
+                                                                    <span class="status-badge success">No</span>
+                                                            </td>
+                        </tr>
+                                    </tbody>
+            </table>
+        </div>
+    
+    <!-- Page 4: Electrical / Panel Details -->
+    <div class="pdf-page">
+        <h2 class="section-title">
+            <i class="fas fa-plug"></i>Electrical & Panel Details
+        </h2>
+        <div class="data-grid">
+            <div class="data-item avoid-break">
+                <div class="data-label">Injection Point Type</div>
+                <div class="data-value">Quadro Auxiliar PT</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Circuit Type</div>
+                <div class="data-value">Trifasico</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Inverter Location</div>
+                <div class="data-value">Lorem ipsum dolor sit amet</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">PV Protection Board Location</div>
+                <div class="data-value">Lorem ipsum dolor sit amet</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Cable Distance PV Board → Injection (m)</div>
+                <div class="data-value">123.00</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Space available for isolator/breaker?</div>
+                <div class="data-value">-</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Busbar space available for connection?</div>
+                <div class="data-value">-</div>
+            </div>
+        </div>
+        <h3 class="section-title" style="margin-top: 30px; font-size: 18px;"><i class="fas fa-bolt"></i>Switchboard Details</h3>
+        <div class="data-grid">
+            <div class="data-item avoid-break">
+                <div class="data-label">Panel Cable Exterior to Main Gauge </div>
+                <div class="data-value">123</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Switchboard Brand / Model</div>
+                <div class="data-value">Lorem ipsum dolor sit amet</div>
+            </div>
+            <div class="data-item avoid-break">
+                <div class="data-label">Circuit Breaker Brand / Model</div>
+                <div class="data-value">Lorem ipsum dolor sit amet</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Rated Current (A)</div>
+                <div class="data-value">123.00</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Short-circuit Current (kA)</div>
+                <div class="data-value">123.00</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Residual Current (mA)</div>
+                <div class="data-value">123.00</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Earth Measurement (Ω)</div>
+                <div class="data-value">123.00</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">E‑Redes Bidirectional Meter?</div>
+                <div class="data-value">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 5: Generator -->
+    <div class="pdf-page">
+        <h2 class="section-title">
+            <i class="fas fa-charging-station"></i>Generator
+        </h2>
+        <div class="data-grid">
+            <div class="data-item">
+                <div class="data-label">Generator present?</div>
+                <div class="data-value">Yes</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Mode of Operation</div>
+                <div class="data-value">Automatico</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Feeds</div>
+                <div class="data-value">Toda Instalacao</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 6: Communications -->
+    <div class="pdf-page">
+        <h2 class="section-title">
+            <i class="fas fa-wifi"></i>Communications
+        </h2>
+        <div class="data-grid">
+            <div class="data-item">
+                <div class="data-label">Wi‑Fi near PV equipment?</div>
+                <div class="data-value">Yes</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Ethernet near PV equipment?</div>
+                <div class="data-value">Yes</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">UTP cabling required?</div>
+                <div class="data-value">Sim</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">UTP cable length (m)</div>
+                <div class="data-value">123.00</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Client willing to open router ports?</div>
+                <div class="data-value">Yes</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Port number</div>
+                <div class="data-value">123</div>
+            </div>
+            <div class="data-item">
+                <div class="data-label">Mobile network coverage (1–5)</div>
+                <div class="data-value">2</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Shading Assessment -->
+            <div class="pdf-page">
+            <h2 class="section-title">
+                <i class="fas fa-cloud-sun-rain"></i>Shading Assessment
+            </h2>
+
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Building</th>
+                        <th>Status</th>
+                        <th>Viable</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                            <tr class="avoid-break">
+                            <td>Lorem ipsum dolor sit amet</td>
+                            <td>
+                                <span class="status-badge danger">
+                                    NONE                                </span>
+                            </td>
+                            <td>
+                                                                    <span class="status-badge success">Yes</span>
+                                                            </td>
+                            <td>Lorem ipsum dolor sit amet</td>
+                        </tr>
+                                    </tbody>
+            </table>
+
+                            <h3 class="section-title" style="margin-top: 30px; font-size: 18px;">
+                    <i class="fas fa-tree"></i>Shading Objects
+                </h3>
+
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Building</th>
+                            <th>Object Type</th>
+                            <th>Cause</th>
+                            <th>Height (m)</th>
+                            <th>Quantity</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                    <tr class="avoid-break">
+                                <td>Lorem ipsum dolor sit amet</td>
+                                <td>Tree</td>
+                                <td>Lorem ipsum dolor sit amet</td>
+                                <td>123.00</td>
+                                <td>1</td>
+                                <td>123</td>
+                            </tr>
+                                            </tbody>
+                </table>
+                    </div>
+    
+    <!-- Page 5: Checklists -->
+            <div class="pdf-page">
+            <h2 class="section-title">
+                <i class="fas fa-clipboard-check"></i>Survey Checklists
+            </h2>
+
+            
+                            <h3 style="margin-top: 30px; margin-bottom: 15px; font-size: 16px; color: var(--primary-dark);">
+                    Photo Checklist
+                </h3>
+
+                <div class="data-grid">
+                                            <div class="data-item">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 18px;"></i>
+                                <span>Roof</span>
+                            </div>
+                        </div>
+                                            <div class="data-item">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 18px;"></i>
+                                <span>PV Switchboard location</span>
+                            </div>
+                        </div>
+                                            <div class="data-item">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 18px;"></i>
+                                <span>Ground resistance</span>
+                            </div>
+                        </div>
+                                            <div class="data-item">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 18px;"></i>
+                                <span>Generator (Generator switchboard)</span>
+                            </div>
+                        </div>
+                                    </div>
+                    </div>
+        <!-- Page: Additional Notes (Final) -->
+    <div class="pdf-page">
+        <h2 class="section-title">
+            <i class="fas fa-sticky-note"></i>Additional Notes
+        </h2>
+
+        <h3 class="section-title" style="font-size: 16px; margin-top: 0;">
+            <i class="fas fa-clipboard-list me-2"></i>Survey Findings and Observations
+        </h3>
+        <div class="data-item" style="margin-bottom: 16px; background: #fff; padding: 12px; border-radius: 6px;">
+            asdadsadsadsadsada        </div>
+
+        <h3 class="section-title" style="font-size: 16px; margin-top: 0;">
+            <i class="fas fa-exclamation-triangle me-2"></i>Challenges or Constraints
+        </h3>
+        <div class="data-item" style="margin-bottom: 16px; background: #fff; padding: 12px; border-radius: 6px;">
+            asdadsadsadasd        </div>
+
+        <h3 class="section-title" style="font-size: 16px; margin-top: 0;">
+            <i class="fas fa-location-dot me-2"></i>Installation Site Observations
+        </h3>
+        <div class="data-item" style="margin-bottom: 16px; background: #fff; padding: 12px; border-radius: 6px;">
+            Lorem ipsum dolor sit amet        </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; margin-top: 40px;">
+        <p>
+            <strong>Cleanwatts Portal</strong> — Professional Solar Solutions<br>
+            Site Survey Report Generated: 2025-11-24 16:18:29<br>
+            Report ID: SURVEY-000001        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Removed continuous view JS - controls are not present for site survey layout -->
+
+    <!-- PDF Export Engine (client-side, matches commissioning layout) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        document.getElementById('downloadPdfBtn').addEventListener('click', async function() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pages = document.querySelectorAll('.pdf-page');
+            // Ensure fonts have loaded for accurate rendering
+            try {
+                await document.fonts.ready;
+            } catch (e) {
+                /* ignore */
+            }
+            // Prepare exact pixel dimensions for A4 at 96dpi
+            const A4_PX_WIDTH = Math.round(210 * 96 / 25.4); // ~794px
+            const A4_PX_HEIGHT = Math.round(297 * 96 / 25.4); // ~1123px
+            // Hide interactive elements that shouldn't appear in the PDF
+            const hiddenEls = [];
+            document.querySelectorAll('.no-print').forEach(el => {
+                hiddenEls.push({
+                    el,
+                    display: el.style.display
+                });
+                el.style.display = 'none';
+            });
+            const project = 'Relatorio_A';
+            const surveyDate = '2025-11-05';
+            const idStr = 'SURV-000001';
+
+            // Capture the entire report as a single canvas then slice into A4 pages
+            const reportEl = document.getElementById('report-content') || document.body;
+            const originalStyle = { w: reportEl.style.width, boxShadow: reportEl.style.boxShadow };
+            reportEl.style.width = A4_PX_WIDTH + 'px';
+            reportEl.style.boxShadow = 'none';
+
+            // Bring top of report into view
+            try { reportEl.scrollIntoView(); } catch (e) {}
+
+            const scale = 2;
+            const canvas = await html2canvas(reportEl, {
+                scale: scale,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#FFFFFF'
+            });
+
+                // Build safe breakpoints from elements marked as avoid-break inside report
+                const pageRect = reportEl.getBoundingClientRect();
+                const avoidEls = Array.from(reportEl.querySelectorAll('.avoid-break'));
+                const safeBreaks = avoidEls.map(el => {
+                    const r = el.getBoundingClientRect();
+                    const bottomCssPx = r.bottom - pageRect.top; // bottom position relative to page in CSS px
+                    return Math.round(bottomCssPx * scale); // convert to canvas px
+                }).sort((a, b) => a - b);
+
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                const a4CssHeight = 297 * (96 / 25.4); // CSS px for A4 height (96dpi)
+                const a4CanvasHeight = Math.round(a4CssHeight * scale);
+
+                let sliceStart = 0;
+                let pageIndex = 0;
+                while (sliceStart < canvasHeight) {
+                    let desired = sliceStart + a4CanvasHeight;
+                    // Find the largest safe break <= desired and > sliceStart
+                    let breakpoint = -1;
+                    for (let k = 0; k < safeBreaks.length; k++) {
+                        if (safeBreaks[k] <= desired && safeBreaks[k] > sliceStart) {
+                            breakpoint = safeBreaks[k];
+                        }
+                    }
+                    let sliceEnd = (breakpoint > sliceStart) ? breakpoint : Math.min(canvasHeight, desired);
+                    // If slice would be too small (safety), extend to desired
+                    if (sliceEnd - sliceStart < 40) {
+                        sliceEnd = Math.min(canvasHeight, desired);
+                    }
+
+                    // Create slice canvas and draw portion
+                    const sliceCanvas = document.createElement('canvas');
+                    sliceCanvas.width = canvasWidth;
+                    sliceCanvas.height = sliceEnd - sliceStart;
+                    const sctx = sliceCanvas.getContext('2d');
+                    sctx.drawImage(canvas, 0, sliceStart, canvasWidth, sliceCanvas.height, 0, 0, canvasWidth, sliceCanvas.height);
+
+                    const imgDataSlice = sliceCanvas.toDataURL('image/jpeg', 0.95);
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const imageHeightMm = (sliceCanvas.height * pageWidth) / canvasWidth;
+                    // Add image as a PDF page (add a page if not the very first slice)
+                    if (pageIndex > 0) pdf.addPage();
+                    pdf.addImage(imgDataSlice, 'JPEG', 0, 0, pageWidth, imageHeightMm);
+
+                    // Add clickable links that are within this slice (query anchors from reportEl)
+                    try {
+                        const anchors = reportEl.querySelectorAll('a[href]');
+                        anchors.forEach(a => {
+                            const r = a.getBoundingClientRect();
+                            const topCss = r.top - pageRect.top; // CSS px
+                            const bottomCss = r.bottom - pageRect.top;
+                            const topCanvas = Math.round(topCss * scale);
+                            const bottomCanvas = Math.round(bottomCss * scale);
+                            if (topCanvas >= sliceStart && topCanvas < sliceEnd) {
+                                const pageWidthMm = pdf.internal.pageSize.getWidth();
+                                // map CSS px -> mm (for x and width)
+                                const x_mm = (r.left - pageRect.left) * (pageWidthMm / pageRect.width);
+                                const w_mm = r.width * (pageWidthMm / pageRect.width);
+                                // map canvas px to mm (for y and height), canvasWidth maps to pageWidthMm
+                                const y_mm = (topCanvas - sliceStart) * (pageWidthMm / canvasWidth);
+                                const h_mm = (bottomCanvas - topCanvas) * (pageWidthMm / canvasWidth);
+                                try {
+                                    pdf.link(x_mm, y_mm, w_mm, h_mm, {
+                                        url: a.getAttribute('href')
+                                    });
+                                } catch (e) {}
+                            }
+                        });
+                    } catch (e) {
+                        /* ignore link overlay if complex */ }
+
+                        sliceStart = sliceEnd;
+                        pageIndex++;
+                }
+
+                    // Restore report styles
+                    reportEl.style.width = originalStyle.w || '';
+                    reportEl.style.boxShadow = originalStyle.boxShadow || '';
+
+            pdf.save(`${idStr}_${project}_${surveyDate}.pdf`);
+
+            // Restore hidden elements' display
+            hiddenEls.forEach(h => h.el.style.display = h.display || '');
+        });
+    </script>
+</body>
+
+</html>

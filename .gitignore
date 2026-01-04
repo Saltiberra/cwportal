@@ -1,0 +1,17 @@
+/.vscode/
+/config/database_online.php
+/config/database_online.php.bak
+/config/database.production.php
+/config/.production
+/config/production.php
+/config/*.env
+/node_modules/
+/vendor/
+/reports/*.pdf
+/reports/*.html
+*.log
+*.sql
+/.env
+/.DS_Store
+/*.zip
+

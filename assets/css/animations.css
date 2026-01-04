@@ -1,0 +1,1035 @@
+/**
+ * Styles complementares para animações e efeitos específicos
+ * Updated with Cleanwatts color palette
+ */
+
+/* Efeito de pulsação para botões importantes - Using Cleanwatts success color */
+@keyframes buttonPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(38, 152, 157, 0.7);
+        /* Cleanwatts teal */
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(38, 152, 157, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(38, 152, 157, 0);
+    }
+}
+
+/* Animação para destacar novos cards - Using Cleanwatts primary color */
+@keyframes cardHighlight {
+    0% {
+        transform: translateY(15px);
+        opacity: 0;
+    }
+
+    70% {
+        transform: translateY(0);
+        opacity: 1;
+        box-shadow: 0 0 20px rgba(44, 204, 211, 0.7);
+        /* Cleanwatts turquoise */
+    }
+
+    85% {
+        box-shadow: 0 0 15px rgba(44, 204, 211, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 0 rgba(44, 204, 211, 0);
+    }
+}
+
+/* Aplicar efeitos aos elementos */
+.btn-success {
+    animation: buttonPulse 2s infinite;
+}
+
+.highlight-new-card {
+    animation: cardHighlight 1.5s ease;
+}
+
+.highlight-new-card .card {
+    border: 2px solid var(--primary-color) !important;
+    /* Using Cleanwatts CSS variable */
+    transition: border-color 0.5s ease;
+}
+
+/* Melhorias visuais para cards */
+.inverter-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inverter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ============================================
+   ANIME.JS ENHANCED ANIMATIONS
+   ============================================ */
+
+/* Fade in from bottom - for cards and sections */
+.anim-fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.anim-fade-up.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Fade in from left */
+.anim-slide-left {
+    opacity: 0;
+    transform: translateX(-40px);
+}
+
+.anim-slide-left.animated {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Fade in from right */
+.anim-slide-right {
+    opacity: 0;
+    transform: translateX(40px);
+}
+
+.anim-slide-right.animated {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Scale in */
+.anim-scale-in {
+    opacity: 0;
+    transform: scale(0.85);
+}
+
+.anim-scale-in.animated {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ============================================
+   ENHANCED CARD HOVER EFFECTS
+   ============================================ */
+
+.card {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(44, 204, 211, 0.15);
+}
+
+.card-header {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect on headers */
+
+/* Custom styles for inverter card action buttons */
+.inverter-card .btn-edit-inverter {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0b5ed7;
+    /* Bootstrap primary-ish */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.inverter-card .btn-edit-inverter i {
+    color: inherit;
+}
+
+.inverter-card .btn-edit-inverter:hover {
+    transform: translateY(-1px);
+    opacity: 0.98;
+}
+
+.inverter-card .btn-delete-inverter {
+    /* keep bootstrap danger but ensure spacing */
+}
+
+/* Ensure action buttons are aligned and have consistent spacing */
+.inverter-card .card-header>div {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    justify-content: flex-end;
+    /* keep actions on right */
+}
+
+.inverter-card .card-header>div>.btn {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+    min-width: 42px;
+    height: 36px;
+    padding: 0.35rem 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.inverter-card .card-header>div>.btn:first-child {
+    margin-left: 0;
+}
+
+.inverter-card .btn-edit-inverter {
+    background: #ffffff;
+    color: #0b5ed7;
+    /* Bootstrap primary-ish */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.inverter-card .btn-edit-inverter:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(11, 94, 215, 0.08);
+}
+
+.inverter-card .btn-delete-inverter {
+    min-width: 42px;
+    height: 36px;
+    padding: 0.35rem 0.6rem;
+}
+
+.card-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.card:hover .card-header::after {
+    left: 100%;
+}
+
+/* ============================================
+   BUTTON RIPPLE EFFECT
+   ============================================ */
+
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Button hover improvements */
+.btn-primary:hover,
+.btn-success:hover,
+.btn-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(44, 204, 211, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+/* ============================================
+   TAB TRANSITION ANIMATIONS
+   ============================================ */
+
+.nav-tabs .nav-link {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-tabs .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color, #2cccd3), var(--secondary-color, #26989d));
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 3px 3px 0 0;
+}
+
+.nav-tabs .nav-link:hover::before,
+.nav-tabs .nav-link.active::before {
+    width: 80%;
+}
+
+/* Tab content fade */
+.tab-pane {
+    animation: tabFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes tabFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   TABLE ANIMATIONS
+   ============================================ */
+
+.table tbody tr {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(44, 204, 211, 0.08);
+}
+
+/* New row animation */
+.table tbody tr.row-new {
+    animation: rowEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes rowEnter {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+        background-color: rgba(44, 204, 211, 0.2);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+        background-color: transparent;
+    }
+}
+
+/* Row remove animation */
+.table tbody tr.row-exit {
+    animation: rowExit 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes rowExit {
+    to {
+        opacity: 0;
+        transform: translateX(30px);
+        height: 0;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+/* ============================================
+   FORM INPUT ANIMATIONS
+   ============================================ */
+
+.form-control,
+.form-select {
+    transition: border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.15s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    transform: scale(1.01);
+    box-shadow: 0 0 0 4px rgba(44, 204, 211, 0.2);
+    border-color: var(--primary-color, #2cccd3);
+}
+
+/* Input success state */
+.form-control.is-valid {
+    animation: inputSuccess 0.4s ease;
+}
+
+@keyframes inputSuccess {
+
+    0%,
+    100% {
+        background-color: inherit;
+    }
+
+    50% {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+}
+
+/* ============================================
+   COUNTER/NUMBER ANIMATIONS
+   ============================================ */
+
+.counter-value {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.counter-value.counting {
+    animation: counterPop 0.3s ease;
+}
+
+@keyframes counterPop {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* ============================================
+   BADGE ANIMATIONS
+   ============================================ */
+
+.badge {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.badge:hover {
+    transform: scale(1.08);
+}
+
+/* Notification badge pulse */
+.badge-notification {
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
+    }
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+/* Skeleton loading */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeletonShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Loading dots */
+.loading-text::after {
+    content: '';
+    animation: loadingDots 1.4s infinite;
+}
+
+@keyframes loadingDots {
+
+    0%,
+    20% {
+        content: '.';
+    }
+
+    40% {
+        content: '..';
+    }
+
+    60%,
+    100% {
+        content: '...';
+    }
+}
+
+/* ============================================
+   MODAL ANIMATIONS
+   ============================================ */
+
+.modal.fade .modal-dialog {
+    transform: scale(0.9) translateY(-50px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+.modal-backdrop.fade {
+    transition: opacity 0.25s ease;
+}
+
+/* ============================================
+   SUCCESS/ERROR FEEDBACK
+   ============================================ */
+
+.flash-success {
+    animation: flashSuccess 0.6s ease;
+}
+
+@keyframes flashSuccess {
+
+    0%,
+    100% {
+        background-color: inherit;
+    }
+
+    30%,
+    70% {
+        background-color: rgba(44, 204, 211, 0.2);
+    }
+}
+
+.shake-error {
+    animation: shakeError 0.5s ease;
+}
+
+@keyframes shakeError {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    15%,
+    45%,
+    75% {
+        transform: translateX(-8px);
+    }
+
+    30%,
+    60%,
+    90% {
+        transform: translateX(8px);
+    }
+}
+
+/* ============================================
+   SECTION HEADINGS
+   ============================================ */
+
+.section-heading {
+    position: relative;
+    padding-left: 16px;
+}
+
+.section-heading::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(180deg, var(--primary-color, #2cccd3), var(--secondary-color, #26989d));
+    border-radius: 2px;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-heading.animated::before {
+    transform: scaleY(1);
+}
+
+/* ============================================
+   NAVBAR SCROLL EFFECT
+   ============================================ */
+
+.navbar {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+}
+
+.navbar.navbar-scrolled {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+}
+
+.dropdown-menu {
+    animation: dropdownSlide 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top;
+}
+
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: scaleY(0.9) translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scaleY(1) translateY(0);
+    }
+}
+
+/* ============================================
+   PROGRESS BAR ANIMATIONS
+   ============================================ */
+
+.progress-bar {
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar-glow {
+    animation: progressGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes progressGlow {
+    from {
+        box-shadow: 0 0 5px rgba(44, 204, 211, 0.5);
+    }
+
+    to {
+        box-shadow: 0 0 20px rgba(44, 204, 211, 0.9);
+    }
+}
+
+/* ============================================
+   MAP MARKER ANIMATIONS
+   ============================================ */
+
+.leaflet-marker-icon {
+    transition: transform 0.25s ease;
+}
+
+.leaflet-marker-icon:hover {
+    transform: scale(1.15) !important;
+}
+
+/* Marker drop animation */
+.marker-drop {
+    animation: markerDrop 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes markerDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.5);
+    }
+
+    60% {
+        transform: translateY(10px) scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================
+   STAGGER DELAYS FOR LISTS
+   ============================================ */
+
+.stagger-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.stagger-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.stagger-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.stagger-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.stagger-item:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.stagger-item:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.stagger-item:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.stagger-item:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   GSAP ANIMATION CLASSES
+   ============================================ */
+
+/* Initial states for GSAP animations */
+.gsap-fade-up {
+    opacity: 0;
+    transform: translateY(60px);
+}
+
+.gsap-fade-left {
+    opacity: 0;
+    transform: translateX(-60px);
+}
+
+.gsap-fade-right {
+    opacity: 0;
+    transform: translateX(60px);
+}
+
+.gsap-scale-in {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.gsap-bounce-in {
+    opacity: 0;
+    transform: scale(0) translateY(30px);
+}
+
+/* Card hover lift - enhanced for GSAP */
+.card-hover-lift {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease !important;
+    cursor: pointer;
+}
+
+.card-hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Magnetic button class */
+.btn-magnetic {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Text reveal container */
+.gsap-text-reveal {
+    overflow: hidden;
+}
+
+.gsap-text-reveal span {
+    display: inline-block;
+}
+
+/* Scroll-triggered elements */
+.gsap-scroll-bounce,
+.gsap-scroll-fade,
+.gsap-scroll-stagger {
+    /* Initial state set by GSAP */
+}
+
+/* Counter styling */
+[data-gsap-counter] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+/* Particles container on other pages */
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Enhanced icon animations */
+.icon-pulse {
+    animation: iconPulse 2s infinite ease-in-out;
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+}
+
+/* Floating animation */
+.floating {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Shine effect on buttons and cards */
+.shine-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.shine-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
+    transition: left 0.5s ease;
+}
+
+.shine-effect:hover::before {
+    left: 100%;
+}
+
+/* Gradient text animation */
+.gradient-text {
+    background: linear-gradient(90deg, #2CCCD3, #26989D, #1fb7b8, #2CCCD3);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Glowing border effect */
+.glow-border {
+    position: relative;
+}
+
+.glow-border::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #2CCCD3, #26989D, #1fb7b8, #2CCCD3);
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: glowBorder 3s ease infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glow-border:hover::after {
+    opacity: 1;
+}
+
+@keyframes glowBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 3D tilt effect on cards */
+.tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+}
+
+.tilt-card:hover {
+    transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+}
+
+/* Success checkmark animation */
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.success-checkmark .check-icon {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    border-radius: 50%;
+    box-sizing: content-box;
+    border: 4px solid #2CCCD3;
+}
+
+.success-checkmark .check-icon::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: -2px;
+    width: 30px;
+    height: 80px;
+    transform-origin: 100% 50%;
+    border-radius: 100px 0 0 100px;
+}
+
+.success-checkmark .check-icon .icon-line {
+    display: block;
+    position: absolute;
+    z-index: 10;
+    height: 5px;
+    background-color: #2CCCD3;
+    border-radius: 2px;
+}
+
+.success-checkmark .check-icon .icon-line.line-tip {
+    top: 46px;
+    left: 14px;
+    width: 25px;
+    transform: rotate(45deg);
+    animation: icon-line-tip 0.75s;
+}
+
+.success-checkmark .check-icon .icon-line.line-long {
+    top: 38px;
+    right: 8px;
+    width: 47px;
+    transform: rotate(-45deg);
+    animation: icon-line-long 0.75s;
+}
+
+@keyframes icon-line-tip {
+    0% {
+        width: 0;
+        left: 1px;
+        top: 19px;
+    }
+
+    54% {
+        width: 0;
+        left: 1px;
+        top: 19px;
+    }
+
+    70% {
+        width: 50px;
+        left: -8px;
+        top: 37px;
+    }
+
+    84% {
+        width: 17px;
+        left: 21px;
+        top: 48px;
+    }
+
+    100% {
+        width: 25px;
+        left: 14px;
+        top: 46px;
+    }
+}
+
+@keyframes icon-line-long {
+    0% {
+        width: 0;
+        right: 46px;
+        top: 54px;
+    }
+
+    65% {
+        width: 0;
+        right: 46px;
+        top: 54px;
+    }
+
+    84% {
+        width: 55px;
+        right: 0px;
+        top: 35px;
+    }
+
+    100% {
+        width: 47px;
+        right: 8px;
+        top: 38px;
+    }
+}

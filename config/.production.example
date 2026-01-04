@@ -1,0 +1,5 @@
+# This flag file enables production mode when present.
+# On localhost: DELETE this file to use local credentials from database.php
+# On production: CREATE this file to use credentials from production.php
+#
+# Current Status: DISABLED (localhost mode active)

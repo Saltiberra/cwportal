@@ -1,0 +1,62 @@
+/* Full-screen loading overlay for Edit mode */
+#global-loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 5000;
+    /* above navbar/modals content */
+    display: none;
+    /* toggled on by PHP only in edit mode */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: opacity 0.3s ease;
+}
+
+#global-loading-overlay.show {
+    display: flex;
+}
+
+#global-loading-overlay.overlay-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-spinner {
+    width: 56px;
+    height: 56px;
+    border: 6px solid rgba(0, 0, 0, 0.08);
+    border-top-color: #0d6efd;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 6px auto 4px auto;
+}
+
+.loading-box {
+    background: linear-gradient(180deg, #ffffff, #fbffff);
+    padding: 24px 28px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(10, 40, 50, 0.08);
+    display: inline-block;
+    text-align: center;
+    min-width: 320px;
+    max-width: 720px;
+}
+
+.loading-title {
+    margin-top: 8px;
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.loading-subtitle {
+    margin-top: 6px;
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

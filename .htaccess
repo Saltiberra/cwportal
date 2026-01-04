@@ -1,0 +1,22 @@
+# ComissionamentoV2 - Apache Configuration
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+# Disable directory listing for security
+Options -Indexes +FollowSymLinks
+
+# Enable .php execution
+<IfModule mod_mime.c>
+    AddType application/x-httpd-php .php
+</IfModule>
+
+# Set default charset
+AddDefaultCharset UTF-8
+
+# Enable CORS for AJAX requests
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
