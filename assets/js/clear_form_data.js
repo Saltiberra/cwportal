@@ -316,7 +316,7 @@ function clearAllLocalStorage() {
 
     // Remover todas as chaves identificadas do banco de dados
     const clearPromises = keysToRemove.map(key => {
-        return fetch(`ajax/clear_draft.php?key=${key}`, {
+        return fetch((window.BASE_URL || "") + `ajax/clear_draft.php?key=${key}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

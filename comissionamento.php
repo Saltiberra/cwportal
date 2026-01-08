@@ -15,6 +15,23 @@ requireLogin();
 // Include database connection
 require_once 'config/database.php';
 
+// Check if we need to clear drafts for a generic new report
+if (isset($_GET['new']) && $_GET['new'] == '1') {
+    $sessId = session_id();
+    try {
+        // Clear drafts for this session without a specific report_id
+        $stmt = $pdo->prepare("DELETE FROM report_drafts WHERE session_id = ? AND (report_id IS NULL OR report_id = 0)");
+        $stmt->execute([$sessId]);
+        error_log("[COMISSIONAMENTO] Cleared draft for new report (session: $sessId)");
+
+        // Redirect to same page without ?new=1 to prevent subsequent clearings on refresh
+        header("Location: comissionamento.php");
+        exit;
+    } catch (Exception $e) {
+        error_log("[COMISSIONAMENTO] Error clearing draft: " . $e->getMessage());
+    }
+}
+
 // Function to get equipment brands from database
 function getEquipmentBrands($type)
 {
@@ -1168,46 +1185,13 @@ if ($reportId) {
         error_log("[PUNCH] ❌ Database error: " . $e->getMessage());
     }
 } else {
-    // NEW REPORT - Signal to JavaScript to not restore from localStorage
+    // NEW REPORT - Signal to JavaScript
     echo '<script>
         // Flag to indicate this is a new report (not loading from database)
         window.IS_NEW_REPORT = true;
         window.LOAD_PROTECTION_FROM_SQL = false;
-        console.log("[New Report] ✅ New report mode - localStorage will not be auto-restored");
-        
-        // 🔒 CRITICAL: Clear ALL localStorage to ensure fresh start
-        // This prevents data contamination from previous reports
-        if (typeof(Storage) !== "undefined") {
-            console.log("[New Report] 🧹 Clearing ALL localStorage for fresh start...");
-            
-            // Remove all autosave data
-            localStorage.removeItem("main-form");
-            localStorage.removeItem("modules_data");
-            localStorage.removeItem("protection_data");
-            localStorage.removeItem("protection_cable_data");
-            localStorage.removeItem("clamp_measurements_data");
-            localStorage.removeItem("inverter_data");
-            localStorage.removeItem("strings_data");
-            localStorage.removeItem("communication_data");
-            localStorage.removeItem("notes_data");
-            
-            // Remove all commissioning_ prefixed keys
-            localStorage.removeItem("commissioning_main-form");
-            localStorage.removeItem("commissioning_epc_id");
-            localStorage.removeItem("commissioning_representative_id");
-            
-            // Clear any other form-related keys
-            const keysToRemove = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && (key.startsWith("form_") || key.startsWith("draft_") || key.startsWith("commissioning"))) {
-                    keysToRemove.push(key);
-                }
-            }
-            keysToRemove.forEach(key => localStorage.removeItem(key));
-            
-            console.log("[New Report] ✅ localStorage cleared successfully (" + (keysToRemove.length + 12) + " keys removed)");
-        }
+        window.EDIT_MODE_SKIP_LOCALSTORAGE = false; // Allow autosave and loading from draft
+        console.log("[New Report] ✅ New report mode - draft autosave enabled");
     </script>';
 }
 ?>
@@ -3544,10 +3528,18 @@ if ($reportId) {
         // We intentionally do NOT populate #new_inverter_brand here to avoid duplicates.
 
         // Load commissioning responsibles on page load
-        fetch('ajax/get_commissioning_responsibles.php')
+        fetch((window.BASE_URL || '') + 'ajax/get_commissioning_responsibles.php')
             .then(response => response.json())
             .then(data => {
                 const select = document.getElementById('commissioning_responsible_id');
+                if (!select) return;
+
+                // Ensure data is array
+                if (!Array.isArray(data)) {
+                    console.error('[Comm Resp] Unexpected data:', data);
+                    return;
+                }
+
                 data.forEach(responsible => {
                     const option = document.createElement('option');
                     option.value = responsible.id;
@@ -3573,11 +3565,18 @@ if ($reportId) {
                     addRepBtn.disabled = false;
                     addRepBtn.title = 'Add New Representative';
 
-                    fetch(`ajax/get_representatives.php?epc_id=${this.value}`)
+                    fetch((window.BASE_URL || '') + `ajax/get_representatives.php?epc_id=${this.value}`)
                         .then(response => response.json())
                         .then(data => {
                             const select = document.getElementById('representative_id');
+                            if (!select) return;
                             select.innerHTML = '<option value="">Select Representative...</option>';
+
+                            if (!Array.isArray(data)) {
+                                console.error('[Rep] Unexpected data:', data);
+                                return;
+                            }
+
                             data.forEach(rep => {
                                 const option = document.createElement('option');
                                 option.value = rep.id;
@@ -3692,7 +3691,7 @@ if ($reportId) {
             }
 
             // Send request to add EPC
-            fetch('ajax/add_epc.php', {
+            fetch((window.BASE_URL || '') + 'ajax/add_epc.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -3818,7 +3817,7 @@ if ($reportId) {
             }
 
             // Send request to add representative
-            fetch('ajax/add_representative.php', {
+            fetch((window.BASE_URL || '') + 'ajax/add_representative.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -3938,7 +3937,7 @@ if ($reportId) {
             }
 
             // Send request to add responsible
-            fetch('ajax/add_commissioning_responsible.php', {
+            fetch((window.BASE_URL || '') + 'ajax/add_commissioning_responsible.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -4853,7 +4852,7 @@ if ($reportId) {
                 return;
             }
 
-            fetch('ajax/manage_smart_meters.php', {
+            fetch((window.BASE_URL || '') + 'ajax/manage_smart_meters.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -5183,6 +5182,106 @@ if ($reportId) {
             initCommMap();
         }
     })();
+</script>
+
+
+<!-- Unsaved Changes Modal -->
+<div class="modal fade" id="unsavedChangesModal" tabindex="-1" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="unsavedChangesModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Unsaved Changes
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>You have unsaved changes in your report.</p>
+                <p>Are you sure you want to leave this page without saving?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel (Stay)</button>
+                <button type="button" class="btn btn-danger" id="btnLeaveWithoutSaving">Leave without saving</button>
+                <button type="button" class="btn btn-success" id="btnSaveAndLeave">
+                    <i class="fas fa-save me-1"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let hasUnsavedChanges = false;
+        let intendedDestination = null;
+        const form = document.getElementById('commissioningForm');
+        const modalEl = document.getElementById('unsavedChangesModal');
+
+        // Only proceed if form and modal exist
+        if (form && modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+
+            // Mark changes on any input
+            form.addEventListener('change', () => {
+                hasUnsavedChanges = true;
+            });
+            form.addEventListener('input', () => {
+                hasUnsavedChanges = true;
+            });
+
+            // Reset flag on valid submit (triggered by button click)
+            form.addEventListener('submit', () => {
+                hasUnsavedChanges = false;
+            });
+
+            // Native browser check (for closing tab/window or reloading)
+            window.addEventListener('beforeunload', function(e) {
+                if (hasUnsavedChanges) {
+                    e.preventDefault();
+                    e.returnValue = ''; // Required for Chrome
+                }
+            });
+
+            // Intercept internal links for Custom Modal
+            document.body.addEventListener('click', function(e) {
+                // Find closest anchor tag
+                const link = e.target.closest('a');
+                if (!link) return;
+
+                // Ignore internal links (anchors, javascript calls, new tabs, dowload)
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('#') || href.startsWith('javascript:') || link.target === '_blank' || link.hasAttribute('download')) return;
+
+                // Check if it's a real navigation (not just a toggle)
+                if (hasUnsavedChanges) {
+                    e.preventDefault();
+                    intendedDestination = href;
+                    modal.show();
+                }
+            });
+
+            // Modal Actions
+            document.getElementById('btnLeaveWithoutSaving').addEventListener('click', function() {
+                hasUnsavedChanges = false; // Disable check
+                modal.hide();
+                if (intendedDestination) {
+                    window.location.href = intendedDestination;
+                }
+            });
+
+            document.getElementById('btnSaveAndLeave').addEventListener('click', function() {
+                modal.hide();
+                // Try to find the submit button to trigger standard validation and submission
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    // Clicking the submit button triggers 'submit' event (clearing flag) and handleFormSubmit
+                    submitBtn.click();
+                } else {
+                    form.submit();
+                }
+            });
+        }
+    });
 </script>
 
 <?php

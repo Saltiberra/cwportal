@@ -1811,7 +1811,7 @@ include 'includes/header.php';
 
     // Load Site Survey Responsibles into dropdown
     document.addEventListener('DOMContentLoaded', function() {
-        const appRoot = window.APP_ROOT || (window.BASE_URL ? new URL(window.BASE_URL).pathname : (window.location.pathname.includes('cleanwattsportal') ? '/cleanwattsportal/' : (window.location.pathname.includes('comissionamentov2') ? '/ComissionamentoV2/' : '/')));
+        const appRoot = window.APP_ROOT || (window.BASE_URL ? new URL(window.BASE_URL).pathname : (window.location.pathname.toLowerCase().includes('cleanwattsportal') ? '/cleanwattsportal/' : (window.location.pathname.toLowerCase().includes('comissionamentov2') ? '/ComissionamentoV2/' : '/')));
         fetch(`${appRoot}ajax/get_site_survey_responsibles.php`)
             .then(r => r.json())
             .then(data => {

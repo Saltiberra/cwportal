@@ -29,7 +29,7 @@ async function saveModuleToDb(moduleData) {
         ...moduleData
     };
 
-    const response = await fetch('ajax/save_module.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_module.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -61,7 +61,7 @@ async function saveInverterToDb(inverterData) {
         ...inverterData
     };
 
-    const response = await fetch('ajax/save_inverter.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_inverter.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -93,7 +93,7 @@ async function saveLayoutToDb(layoutData) {
         ...layoutData
     };
 
-    const response = await fetch('ajax/save_layout.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_layout.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -125,7 +125,7 @@ async function saveProtectionToDb(protectionData) {
         ...protectionData
     };
 
-    const response = await fetch('ajax/save_protection.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_protection.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -157,7 +157,7 @@ async function saveStringMeasurementToDb(measurementData) {
         ...measurementData
     };
 
-    const response = await fetch('ajax/save_string_measurement.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_string_measurement.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -189,7 +189,7 @@ async function saveCommunicationToDb(commData) {
         ...commData
     };
 
-    const response = await fetch('ajax/save_communication.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_communication.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -221,7 +221,7 @@ async function saveTelemetryMeterToDb(meterData) {
         ...meterData
     };
 
-    const response = await fetch('ajax/save_telemetry_meter.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_telemetry_meter.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -253,7 +253,7 @@ async function saveEnergyMeterToDb(meterData) {
         ...meterData
     };
 
-    const response = await fetch('ajax/save_energy_meter.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_energy_meter.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -285,7 +285,7 @@ async function savePunchItemToDb(punchData) {
         ...punchData
     };
 
-    const response = await fetch('ajax/save_punch_item.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_punch_item.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -317,7 +317,7 @@ async function saveNoteToDb(noteData) {
         ...noteData
     };
 
-    const response = await fetch('ajax/save_notes.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/save_notes.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -344,7 +344,7 @@ async function deleteItemFromDb(tableName, itemId) {
         id: itemId
     };
 
-    const response = await fetch('ajax/delete_item.php', {
+    const response = await fetch((window.BASE_URL || '') + 'ajax/delete_item.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

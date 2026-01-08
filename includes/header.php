@@ -31,7 +31,17 @@ if (isset($_SESSION['user_id'])) {
     ];
     $userRole = $loggedInUser['role'];
 }
+
+// Define a reliable BASE_URL for all JS fetches
+$baseUrl = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
+if ($baseUrl !== '/') {
+    $baseUrl = rtrim($baseUrl, '/') . '/';
+}
 ?>
+<script>
+    window.BASE_URL = '<?php echo $baseUrl; ?>';
+    console.log('[Header] Global BASE_URL set to:', window.BASE_URL);
+</script>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,13 +82,6 @@ if (isset($_SESSION['user_id'])) {
     <script src="assets/js/animations.js" defer></script>
     <script src="assets/js/gsap-animations.js" defer></script>
 
-    <!-- ⚠️ Commission form specific scripts - Load conditionally only for comissionamento.php -->
-    <?php if (basename($_SERVER['PHP_SELF']) === 'comissionamento.php'): ?>
-        <script src="assets/js/dropdown-handler.js?v=3"></script>
-        <script src="assets/js/dropdown-persistence-fix.js?v=1"></script>
-        <!-- autosave_sql is loaded once in footer (v=2). Avoid duplicate includes here. -->
-        <script src="assets/js/progressive_save.js?v=1.0"></script>
-    <?php endif; ?>
 </head>
 
 <body>
@@ -127,7 +130,7 @@ if (isset($_SESSION['user_id'])) {
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="commissioningDropdown">
                             <li><a class="dropdown-item" href="commissioning_dashboard.php"><i class="fas fa-gauge me-2"></i>Dashboard</a></li>
-                            <li><a class="dropdown-item" href="comissionamento.php"><i class="fas fa-plus me-2"></i>New Report</a></li>
+                            <li><a class="dropdown-item" href="comissionamento.php?new=1"><i class="fas fa-plus me-2"></i>New Report</a></li>
                         </ul>
                     </li>
                     <!-- Site Survey Navigation -->

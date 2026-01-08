@@ -41,7 +41,7 @@ class PunchListManager {
         // Debounced single fetch
         if (this._pinging) return;
         this._pinging = true;
-        fetch('ajax/check_session.php', { credentials: 'same-origin' })
+        fetch((window.BASE_URL || '') + 'ajax/check_session.php', { credentials: 'same-origin' })
             .then(async resp => {
                 const txt = await resp.text();
                 let j = null;
@@ -349,7 +349,7 @@ class PunchListManager {
                     if (!this._prefLoaded && !this.currentProject) {
                         this._prefLoaded = true;
 
-                        fetch('ajax/get_user_preference.php?key=punch_project_filter')
+                        fetch((window.BASE_URL || '') + 'ajax/get_user_preference.php?key=punch_project_filter')
                             .then(resp => {
                                 if (!resp.ok) {
                                     return resp.text().then(txt => {
@@ -436,7 +436,7 @@ class PunchListManager {
             projectFilter.addEventListener('change', () => {
                 // Persist selection to server-side preference (and fall back to localStorage)
                 try {
-                    fetch('ajax/save_user_preference.php', {
+                    fetch((window.BASE_URL || '') + 'ajax/save_user_preference.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ key: 'punch_project_filter', value: projectFilter.value })

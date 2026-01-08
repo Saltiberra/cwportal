@@ -219,7 +219,7 @@ function deleteInverter(index) {
             const inv = window.invertersList[index];
             if (inv && (inv.id || inv.inverter_id)) {
                 // Persist deletion to server
-                fetch('ajax/delete_item.php', {
+                fetch((window.BASE_URL || '') + 'ajax/delete_item.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ table: 'report_equipment', id: inv.id || inv.inverter_id })

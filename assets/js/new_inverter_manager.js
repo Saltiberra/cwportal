@@ -425,7 +425,7 @@ if (window.REPORTS_PAGE) {
 
             if (hasDbId) {
                 const idToDelete = inverter.id || inverter.inverter_id;
-                fetch('ajax/delete_item.php', {
+                fetch((window.BASE_URL || '') + 'ajax/delete_item.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ table: 'report_equipment', id: idToDelete })

@@ -50,7 +50,8 @@ $brandsJson = json_encode($brands);
 
             // Use XMLHttpRequest for maximum compatibility
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'ajax/get_equipment_models.php?type=pv_module&brand_id=' + brandId, true);
+            const baseUrl = window.BASE_URL || '';
+            xhr.open('GET', baseUrl + 'ajax/get_equipment_models.php?type=pv_module&brand_id=' + brandId, true);
 
             xhr.onload = function() {
                 console.log('Response received:', xhr.responseText);

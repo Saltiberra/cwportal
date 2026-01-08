@@ -9,25 +9,25 @@ if (window.REPORTS_PAGE) {
 } else {
 
     // Base URL para requisições AJAX (ajusta automaticamente baseado no ambiente)
-    // Usar caminho absoluto incluindo origem para evitar problemas
-    // Auto-detect BASE_URL based on current location
-    // Works both in /ComissionamentoV2/ subdirectory and at root
-    let BASE_URL = window.location.pathname;
+    if (!window.BASE_URL) {
+        let BASE_URL = window.location.pathname;
 
-    // Remove trailing slashes and page names to get base path
-    BASE_URL = BASE_URL.replace(/\/(comissionamento|reports|index)\.php.*$/, '/');
-    BASE_URL = BASE_URL.replace(/\/+$/, '') + '/'; // Ensure single trailing slash
+        // Remove trailing slashes and page names to get base path
+        BASE_URL = BASE_URL.replace(/\/(comissionamento|reports|index)\.php.*$/, '/');
+        BASE_URL = BASE_URL.replace(/\/+$/, '') + '/'; // Ensure single trailing slash
 
-    // If only one level (root), just use /
-    if (BASE_URL.split('/').filter(x => x).length === 0) {
-        BASE_URL = '/';
+        // If only one level (root), just use /
+        if (BASE_URL.split('/').filter(x => x).length === 0) {
+            BASE_URL = '/';
+        }
+
+        BASE_URL = window.location.origin + BASE_URL;
+
+        // Tornar BASE_URL global para outros scripts
+        window.BASE_URL = BASE_URL;
     }
-
-    BASE_URL = window.location.origin + BASE_URL;
-
-    // Tornar BASE_URL global para outros scripts
-    window.BASE_URL = BASE_URL;
-    console.log('[Dropdown Handler] BASE_URL auto-detected:', window.BASE_URL);
+    const BASE_URL = window.BASE_URL;
+    console.log('[Dropdown Handler] BASE_URL (effective):', window.BASE_URL);
 
     // Função para carregar modelos de equipamento baseado na marca selecionada
     function loadEquipmentModels(type, brandId, targetSelectId) {

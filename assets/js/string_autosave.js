@@ -92,7 +92,7 @@
 
         console.log('[STRING_AUTOSAVE] Saving', parsed.metric, '=', inputElement.value, 'for inv', parsed.inverter_index, 'mppt', parsed.mppt, 'str', parsed.string_num);
 
-        fetch('ajax/autosave_string_measurement.php', {
+        fetch((window.BASE_URL || '') + 'ajax/autosave_string_measurement.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -266,7 +266,7 @@
                 if (count === 0) {
                     console.log('[STRING_AUTOSAVE] No draft measurements found (first edit or empty), fetching from DB...');
                     // Buscar ao endpoint SQL
-                    fetch('ajax/mppt_crud.php?action=load&report_id=' + reportId)
+                    fetch((window.BASE_URL || '') + 'ajax/mppt_crud.php?action=load&report_id=' + reportId)
                         .then(resp => resp.json())
                         .then(sqlData => {
                             if (sqlData && sqlData.success && Array.isArray(sqlData.measurements)) {

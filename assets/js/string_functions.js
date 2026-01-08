@@ -366,7 +366,7 @@ if (window.REPORTS_PAGE) {
         container.innerHTML = '<div class="text-center p-2"><div class="spinner-border spinner-border-sm text-primary" role="status"></div><div class="mt-1 small text-muted">Loading inverter data...</div></div>';
 
         // Fazer requisição AJAX
-        fetch(`ajax/get_inverter_data.php?inverter_id=${inverterId}`)
+        fetch((window.BASE_URL || "") + `ajax/get_inverter_data.php?inverter_id=${inverterId}`)
             .then(response => response.json())
             .then(data => {
                 // Gerar a tabela de medição com design compacto
@@ -577,7 +577,7 @@ if (window.REPORTS_PAGE) {
         if (skipLS) return;
 
         // Load from database draft
-        fetch('ajax/load_string_inputs_draft.php')
+        fetch((window.BASE_URL || '') + 'ajax/load_string_inputs_draft.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.string_inputs) {
@@ -595,7 +595,7 @@ if (window.REPORTS_PAGE) {
                             if (skipLS) return;
                             try {
                                 storedObj[input.id] = this.value;
-                                fetch('ajax/save_string_inputs_draft.php', {
+                                fetch((window.BASE_URL || '') + 'ajax/save_string_inputs_draft.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -1173,6 +1173,7 @@ if (window.REPORTS_PAGE) {
                 string_num: e.string_num,
                 voc: e.metrics['voc'] || e.metrics['Voc'] || '',
                 isc: e.metrics['isc'] || e.metrics['current'] || '',
+                current: e.metrics['current'] || e.metrics['isc'] || '',
                 vmp: e.metrics['vmp'] || '',
                 imp: e.metrics['imp'] || '',
                 rins: e.metrics['rins'] || '',

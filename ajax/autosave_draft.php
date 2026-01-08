@@ -36,7 +36,8 @@ if (!$data) {
 // 🔧 SUPORTE PARA LIMPAR DRAFTS ANTIGOS
 if (isset($data['action']) && $data['action'] === 'clear_old_drafts') {
     try {
-        $sessionId = $data['session_id'] ?? null;
+        $phpSessionId = session_id();
+        $sessionId = $data['session_id'] ?? $phpSessionId;
         $userId = $_SESSION['user_id'] ?? null;
 
         if ($sessionId) {

@@ -1613,7 +1613,7 @@ include 'includes/activity_timeline.php';
                 document.getElementById('fsAddProblemBtn')?.addEventListener('click', async () => {
                     // ensure project users loaded in select
                     try {
-                        const appRoot = window.APP_ROOT || (window.BASE_URL ? new URL(window.BASE_URL).pathname : (window.location.pathname.includes('cleanwattsportal') ? '/cleanwattsportal/' : (window.location.pathname.includes('comissionamentov2') ? '/ComissionamentoV2/' : '/')));
+                        const appRoot = window.APP_ROOT || (window.BASE_URL ? new URL(window.BASE_URL).pathname : (window.location.pathname.toLowerCase().includes('cleanwattsportal') ? '/cleanwattsportal/' : (window.location.pathname.toLowerCase().includes('comissionamentov2') ? '/ComissionamentoV2/' : '/')));
                         const r = await fetch(`${appRoot}ajax/get_field_supervision_users.php`, {
                             credentials: 'include'
                         });
@@ -2333,7 +2333,7 @@ include 'includes/activity_timeline.php';
         document.getElementById('fsProblemDesc').value = '';
         document.getElementById('fsProblemSeverity').value = 'minor';
         // populate user list
-        const appRoot = window.APP_ROOT || (window.BASE_URL ? new URL(window.BASE_URL).pathname : (window.location.pathname.includes('cleanwattsportal') ? '/cleanwattsportal/' : (window.location.pathname.includes('comissionamentov2') ? '/ComissionamentoV2/' : '/')));
+        const appRoot = window.APP_ROOT || (window.BASE_URL ? new URL(window.BASE_URL).pathname : (window.location.pathname.toLowerCase().includes('cleanwattsportal') ? '/cleanwattsportal/' : (window.location.pathname.toLowerCase().includes('comissionamentov2') ? '/ComissionamentoV2/' : '/')));
         fetch(`${appRoot}ajax/get_field_supervision_users.php`, {
                 credentials: 'include'
             })

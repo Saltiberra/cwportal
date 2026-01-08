@@ -24,5 +24,5 @@ try {
 }
 
 echo "\n=== API TEST ===\n";
-echo "Try calling: http://localhost/ComissionamentoV2/ajax/manage_responsibles.php?action=list\n";
+echo "Try calling: http://localhost/cleanwattsportal/ajax/manage_responsibles.php?action=list\n";
 echo "</pre>";

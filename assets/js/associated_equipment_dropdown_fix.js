@@ -28,17 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Esperar um pouco para a aba ser ativada antes de inicializar os dropdowns
         setTimeout(function () {
-            // Definir BASE_URL auto-detectando
-            if (!window.BASE_URL) {
-                let detectedURL = window.location.pathname;
-                detectedURL = detectedURL.replace(/\/(comissionamento|reports|index)\.php.*$/, '/');
-                detectedURL = detectedURL.replace(/\/+$/, '') + '/';
-                if (detectedURL.split('/').filter(x => x).length === 0) {
-                    detectedURL = '/';
-                }
-                window.BASE_URL = window.location.origin + detectedURL;
-                console.log('[Dropdown Fix] BASE_URL auto-detected:', window.BASE_URL);
-            }
+            // Usar BASE_URL global se disponível
+            const baseUrl = window.BASE_URL || '/';
+            console.log('[Dropdown Fix] Using BASE_URL:', baseUrl);
 
             console.log('[Dropdown Fix] Carregando Circuit Breaker brands...');
             loadEquipmentBrandsDirectly('circuit_breaker', 'new_circuit_breaker_brand', 'new_circuit_breaker_model');
@@ -89,6 +81,10 @@ function loadEquipmentBrandsDirectly(type, brandSelectId, modelSelectId) {
         if (xhr.status === 200) {
             try {
                 const brands = JSON.parse(xhr.responseText);
+                if (!Array.isArray(brands)) {
+                    console.error(`[Dropdown Fix] Recieved non-array brands data for ${type}:`, brands);
+                    return;
+                }
                 console.log(`[Dropdown Fix] ${brands.length} marcas carregadas para ${type}`);
 
                 // Limpar opções existentes
@@ -150,6 +146,11 @@ function loadEquipmentModelsDirectly(type, brandId, modelSelectId) {
         if (xhr.status === 200) {
             try {
                 const models = JSON.parse(xhr.responseText);
+                if (!Array.isArray(models)) {
+                    console.error(`[Dropdown Fix] Recieved non-array models data for ${type}:`, models);
+                    modelSelect.innerHTML = '<option value="">Error loading models</option>';
+                    return;
+                }
                 console.log(`[Dropdown Fix] ${models.length} modelos carregados para ${type}, marca ID ${brandId}`);
 
                 // Limpar opções existentes

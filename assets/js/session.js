@@ -9,7 +9,7 @@
         ping() {
             if (this._pinging) return;
             this._pinging = true;
-            fetch('ajax/check_session.php', { credentials: 'same-origin' })
+            fetch((window.BASE_URL || '') + 'ajax/check_session.php', { credentials: 'same-origin' })
                 .then(async resp => {
                     const txt = await resp.text();
                     let j = null;

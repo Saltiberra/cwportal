@@ -689,7 +689,7 @@
      */
     function checkSessionStatus() {
         // Fazer uma chamada simples para verificar se estamos logados
-        fetch('ajax/check_session.php', {
+        fetch((window.BASE_URL || '') + 'ajax/check_session.php', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

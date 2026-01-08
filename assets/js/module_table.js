@@ -12,58 +12,48 @@ if (window.REPORTS_PAGE) {
     // modulesList agora está definida no arquivo main.js
     // invertersList agora está definida no arquivo inverter_functions.js
 
-    // Função unificada para buscar marcas
+    // Função unificada para buscar marcas (Converted to XHR for better compatibility)
     function fetchBrands(type, targetDropdownId) {
-        // Determinar a URL base do projeto - detectar do caminho atual
-        let baseUrl = '';
-        const pathParts = window.location.pathname.split('/').filter(p => p);
-        if (pathParts.length > 0 && pathParts[0] !== 'ajax') {
-            baseUrl = '/' + pathParts[0] + '/';
+        let baseUrl = window.BASE_URL || '/';
+        const dropdown = document.getElementById(targetDropdownId);
+        
+        if (!dropdown) {
+            console.error(`Components #${targetDropdownId} not found`);
+            return;
         }
 
-        // URL primária para buscar marcas
-        let url = `${baseUrl}ajax/dropdown_handler.php?action=getBrands&type=${type}`;
+        // Use direct PHP file which is proven to work in other scripts
+        // instead of dropdown_handler.php which seems to trigger firewall/errors with fetch
+        let url = `${baseUrl}ajax/get_equipment_brands.php?type=${type}`;
 
-        // URL de fallback (compatível com outros arquivos)
-        let fallbackUrl = `${baseUrl}ajax/get_equipment_brands.php?type=${type}`;
+        console.log(`Fetching brands for ${type} to populate ${targetDropdownId} via XHR`);
 
-        console.log(`Fetching brands for ${type} to populate ${targetDropdownId}`);
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.timeout = 10000;
 
-        // Primeiro tentar com dropdown_handler.php
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Primary endpoint failed, trying fallback');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    let data = JSON.parse(xhr.responseText);
+                    // Handle response wrapper if present
+                    if (data.data) data = data.data;
+                    
+                    populateBrandDropdown(data, targetDropdownId, type);
+                } catch (e) {
+                    console.error('Error parsing brands JSON:', e);
+                    dropdown.innerHTML = '<option value="">Error loading data</option>';
                 }
-                return response.json();
-            })
-            .then(responseData => {
-                // dropdown_handler.php returns {success, options, type}
-                // options array has {id, name} format
-                const data = responseData.options || responseData;
-                populateBrandDropdown(data, targetDropdownId, type);
-            })
-            .catch(error => {
-                console.warn(`Primary endpoint error: ${error.message}. Trying fallback URL...`);
+            } else {
+                console.error(`HTTP Error ${xhr.status} loading brands`);
+            }
+        };
 
-                // Tentar fallback
-                fetch(fallbackUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Fallback HTTP error: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(response => {
-                        // Processar dados (pode ter formatos diferentes)
-                        const data = response.data || response;
-                        populateBrandDropdown(data, targetDropdownId, type);
-                    })
-                    .catch(fallbackError => {
-                        console.error('Error loading brands from both endpoints:', fallbackError);
-                        // Don't show toast - the dropdown will display the error state
-                    });
-            });
+        xhr.onerror = function() {
+            console.error('Network error loading brands');
+        };
+
+        xhr.send();
     }
 
     // Função auxiliar para popular dropdown de marcas
@@ -82,65 +72,45 @@ if (window.REPORTS_PAGE) {
         }
     }
 
-    // Função unificada para buscar modelos
+    // Função unificada para buscar modelos (Converted to XHR)
     function fetchModels(type, brandId, targetDropdownId) {
-        // Determinar a URL base do projeto - detectar do caminho atual
-        let baseUrl = '';
-        const pathParts = window.location.pathname.split('/').filter(p => p);
-        if (pathParts.length > 0 && pathParts[0] !== 'ajax') {
-            baseUrl = '/' + pathParts[0] + '/';
-        }
+        let baseUrl = window.BASE_URL || '/';
+        const dropdown = document.getElementById(targetDropdownId);
 
-        // URL primária para buscar modelos
-        let url = `${baseUrl}ajax/dropdown_handler.php?action=getModels&type=${type}&brand_id=${brandId}`;
+        if (!dropdown) return;
 
-        // URL de fallback (usada por main.js)
-        let fallbackUrl = `${baseUrl}ajax/get_equipment_models.php?type=${type}&brand_id=${brandId}`;
+        let url = `${baseUrl}ajax/get_equipment_models.php?type=${type}&brand_id=${brandId}`;
 
-        console.log(`Fetching models for ${type} (brand ID: ${brandId}) to populate ${targetDropdownId}`);
+        console.log(`Fetching models for ${type} (brand ID: ${brandId}) to populate ${targetDropdownId} via XHR`);
+        
+        dropdown.innerHTML = '<option value="">Loading...</option>';
 
-        // Primeiro tentar com dropdown_handler.php
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Primary endpoint failed, trying fallback');
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.timeout = 10000;
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    let data = JSON.parse(xhr.responseText);
+                    populateModelDropdown(data, targetDropdownId);
+                } catch (e) {
+                     console.error('Error parsing models JSON:', e);
+                     dropdown.innerHTML = '<option value="">Error loading models</option>';
                 }
-                return response.json();
-            })
-            .then(responseData => {
-                // dropdown_handler.php returns {success, options, type}
-                const data = responseData.options || responseData;
-                populateModelDropdown(data, targetDropdownId, type, brandId);
-            })
-            .catch(error => {
-                console.warn(`Primary endpoint error: ${error.message}. Trying fallback URL...`);
+            } else {
+                console.error(`HTTP Error ${xhr.status} loading models`);
+            }
+        };
+        
+        xhr.onerror = function() {
+             console.error('Network error loading models');
+             dropdown.innerHTML = '<option value="">Network Error</option>';
+        };
 
-                // Tentar fallback
-                fetch(fallbackUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Fallback HTTP error: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(response => {
-                        // Processar dados (pode ter formatos diferentes)
-                        const data = response.data || response;
-                        populateModelDropdown(data, targetDropdownId, type, brandId);
-                    })
-                    .catch(fallbackError => {
-                        console.error('Error loading models from both endpoints:', fallbackError);
-                        // Don't show toast - the dropdown will display the error state
-
-                        // Habilitar dropdown mesmo com erro
-                        const dropdown = document.getElementById(targetDropdownId);
-                        if (dropdown) dropdown.disabled = false;
-                    });
-            });
-    }
-
-    // Função auxiliar para popular dropdown de modelos
-    function populateModelDropdown(data, targetDropdownId, type, brandId) {
+        xhr.send();
+    }    // Função auxiliar para popular dropdown de modelos
+    function populateModelDropdown(data, targetDropdownId) {
         const dropdown = document.getElementById(targetDropdownId);
         if (dropdown && Array.isArray(data)) {
             dropdown.innerHTML = '<option value="">Select Model...</option>';

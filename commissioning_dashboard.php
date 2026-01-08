@@ -146,7 +146,7 @@ try {
             </div>
             <h2 class="fw-bold mb-3 gsap-text-reveal" style="font-size: 1.75rem;">PV System Commissioning</h2>
             <p class="lead text-muted mb-4">Professional Solar Photovoltaic Commissioning and Inspection Reports</p>
-            <a href="comissionamento.php" class="btn btn-primary btn-lg me-3 btn-magnetic">
+            <a href="comissionamento.php?new=1" class="btn btn-primary btn-lg me-3 btn-magnetic">
                 <i class="fas fa-plus me-2"></i>Create New Report
             </a>
         </div>

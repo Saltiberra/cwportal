@@ -11,7 +11,7 @@ function softDeleteReport(reportId) {
     const formData = new FormData();
     formData.append('report_id', reportId);
 
-    fetch('ajax/delete_report_soft.php', {
+    fetch((window.BASE_URL || '') + 'ajax/delete_report_soft.php', {
         method: 'POST',
         body: formData
     })

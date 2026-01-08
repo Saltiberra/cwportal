@@ -203,7 +203,7 @@ function loadReportData($report_id, $pdo)
                     'mppt' => $mppt,
                     'string_num' => $snum,
                     'voc' => isset($r['voc']) ? trim($r['voc']) : null,
-                    'isc' => isset($r['isc']) ? trim($r['isc']) : null,
+                    'isc' => isset($r['isc']) && trim((string)$r['isc']) !== '' ? trim($r['isc']) : (isset($r['current']) ? trim($r['current']) : null),
                     'vmp' => isset($r['vmp']) ? trim($r['vmp']) : null,
                     'imp' => isset($r['imp']) ? trim($r['imp']) : null,
                     'rins' => isset($r['rins']) ? trim($r['rins']) : null,

@@ -1,6 +1,6 @@
 <?php
 // Server-side PDF generator using Dompdf (optional)
-// Usage: /ComissionamentoV2/server_generate_pdf.php?id=123
+// Usage: /cleanwattsportal/server_generate_pdf.php?id=123
 
 require_once __DIR__ . '/includes/auth.php';
 requireLogin();
@@ -20,7 +20,7 @@ if (!file_exists($autoload)) {
     echo "Dompdf is not installed.\n\n";
     echo "Install with Composer:\n";
     echo "  composer require dompdf/dompdf:1.2.*\n\n";
-    echo "Then reload this URL: /ComissionamentoV2/server_generate_pdf.php?id={$reportId}\n";
+    echo "Then reload this URL: /cleanwattsportal/server_generate_pdf.php?id={$reportId}\n";
     exit;
 }
 

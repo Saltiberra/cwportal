@@ -9,8 +9,8 @@
  * for an existing punch list row with same report_id + description.
  *
  * Usage:
- * - Dry run (default):  /ComissionamentoV2/db_migrate_punch_list_legacy.php
- * - Execute migration:  /ComissionamentoV2/db_migrate_punch_list_legacy.php?run=1
+ * - Dry run (default):  /cleanwattsportal/db_migrate_punch_list_legacy.php
+ * - Execute migration:  /cleanwattsportal/db_migrate_punch_list_legacy.php?run=1
  * - JSON output:        add &format=json
  */
 

@@ -174,28 +174,17 @@ function setupEquipmentDropdowns(type, brandSelectId, modelSelectId) {
 function loadEquipmentBrands(type, selectId) {
     console.log(`[Associated Equipment] Loading brands for ${type}`);
 
-    if (!window.BASE_URL) {
-        console.error('[Associated Equipment] BASE_URL não definido!');
-        return;
-    }
-
-    const select = document.getElementById(selectId);
-    if (!select) return;
-
-    // Limpar opções existentes
-    select.innerHTML = '<option value="">Select Brand...</option>';
-
-    // Verificar e ajustar BASE_URL se necessário (auto-detect)
+    // Robust BASE_URL detection
     if (!window.BASE_URL || window.BASE_URL.includes('undefined')) {
         // Auto-detect BASE_URL based on current location
         let detectedURL = window.location.pathname;
-        detectedURL = detectedURL.replace(/\/(comissionamento|reports|index)\.php.*$/, '/');
+        detectedURL = detectedURL.replace(/\/(comissionamento|reports|index|site_survey|survey_index)\.php.*$/, '/');
         detectedURL = detectedURL.replace(/\/+$/, '') + '/';
         if (detectedURL.split('/').filter(x => x).length === 0) {
             detectedURL = '/';
         }
         window.BASE_URL = window.location.origin + detectedURL;
-        console.log(`[Associated Equipment] BASE_URL auto-detected: ${window.BASE_URL}`);
+        console.log(`[Associated Equipment] BASE_URL initialized/fixed: ${window.BASE_URL}`);
     }
 
     // URL para obter as marcas
@@ -209,10 +198,31 @@ function loadEquipmentBrands(type, selectId) {
     xhr.timeout = 10000; // 10 segundos timeout
 
     xhr.onload = function () {
+        const select = document.getElementById(selectId);
+        if (!select) {
+            console.error(`[Associated Equipment] Dropdown #${selectId} não encontrado no DOM`);
+            return;
+        }
+
         if (xhr.status === 200) {
             try {
-                const brands = JSON.parse(xhr.responseText);
-                console.log(`[Associated Equipment] Recebidas ${brands.length} marcas para ${type}:`, brands);
+                // Parse the response
+                let brands;
+                try {
+                    brands = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    console.error('[Associated Equipment] Failed to parse JSON:', xhr.responseText.substring(0, 100) + '...');
+                    throw e;
+                }
+
+                console.log(`[Associated Equipment] Recebidas ${brands ? brands.length : 0} marcas para ${type}:`, brands);
+
+                if (!Array.isArray(brands)) {
+                     throw new Error('Response is not an array');
+                }
+
+                // Clear invalid options and add default
+                select.innerHTML = '<option value="">Select Brand...</option>';
 
                 // Adicionar opções ao select
                 brands.forEach(brand => {
@@ -224,7 +234,7 @@ function loadEquipmentBrands(type, selectId) {
 
                 console.log(`[Associated Equipment] Dropdown #${selectId} populado com marcas`);
             } catch (error) {
-                console.error(`[Associated Equipment] Error parsing JSON for ${type}:`, error);
+                console.error(`[Associated Equipment] Error processing brands for ${type}:`, error);
                 select.innerHTML = '<option value="">Error loading brands</option>';
             }
         } else {
@@ -234,13 +244,19 @@ function loadEquipmentBrands(type, selectId) {
     };
 
     xhr.onerror = function () {
-        console.error(`[Associated Equipment] Erro de rede ao carregar marcas para ${type}`);
-        select.innerHTML = '<option value="">Erro de rede</option>';
+        const select = document.getElementById(selectId);
+        if (select) {
+            console.error(`[Associated Equipment] Erro de rede ao carregar marcas para ${type}`);
+            select.innerHTML = '<option value="">Erro de rede</option>';
+        }
     };
 
     xhr.ontimeout = function () {
-        console.error(`[Associated Equipment] Timeout ao carregar marcas para ${type}`);
-        select.innerHTML = '<option value="">Timeout</option>';
+        const select = document.getElementById(selectId);
+        if (select) {
+            console.error(`[Associated Equipment] Timeout ao carregar marcas para ${type}`);
+            select.innerHTML = '<option value="">Timeout</option>';
+        }
     };
 
     xhr.send();
@@ -268,7 +284,9 @@ function loadEquipmentModels(type, brandId, selectId) {
 
     // Verificar e ajustar BASE_URL se necessário
     if (!window.BASE_URL) {
-        window.BASE_URL = window.location.origin + '/ComissionamentoV2/';
+        const lp = window.location.pathname.toLowerCase();
+        const detectedPath = lp.includes('cleanwattsportal') ? '/cleanwattsportal/' : (lp.includes('comissionamentov2') ? '/ComissionamentoV2/' : '/');
+        window.BASE_URL = window.location.origin + detectedPath;
         console.log(`[Associated Equipment] BASE_URL não estava definido, definido como: ${window.BASE_URL}`);
     }
 

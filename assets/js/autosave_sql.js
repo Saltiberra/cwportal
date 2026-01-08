@@ -2,7 +2,7 @@
  * Sistema de AutoSave para SQL
  * Guarda automaticamente todos os dados do formulário no servidor
  * 
- * @author ComissionamentoV2
+ * @author Cleanwatts
  * @version 2.0
  */
 
@@ -81,38 +81,14 @@
     /**
      * Limpar dados antigos quando é um novo relatório
      * Agora limpa apenas dados na BD via AJAX
+     * NOTE: Desativado em favor da limpeza via PHP (?new=1) para evitar perda de dados em refresh
      */
     function clearNewReportData() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const reportId = urlParams.get('report_id');
-
-        // Se for um novo relatório (sem report_id), limpar dados antigos na BD
-        if (!reportId && window.IS_NEW_REPORT) {
-            console.log('[AUTOSAVE SQL] 🧹 New report detected - clearing old draft data from database');
-
-            // Fazer chamada AJAX para limpar drafts antigos desta sessão
-            fetch('ajax/autosave_draft.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'clear_old_drafts',
-                    session_id: window.formSessionToken || null
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('[AUTOSAVE SQL] ✅ Old draft data cleared from database');
-                    } else {
-                        console.warn('[AUTOSAVE SQL] ⚠️ Could not clear old draft data:', data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('[AUTOSAVE SQL] ❌ Error clearing old draft data:', error);
-                });
-        }
+        return new Promise((resolve) => {
+            // A limpeza agora é feita pelo PHP no carregamento da página se ?new=1 estiver presente
+            // Isso evita que um simples refresh (F5/Ctrl+R) apague o progresso do usuário
+            resolve();
+        });
     }
 
     let initAttempts = 0; // Contador para não tentar infinitamente
@@ -131,14 +107,13 @@
         console.log('🚀 [AUTOSAVE SQL] Initializing System...');
         console.log('═══════════════════════════════════════════════════');
 
-        // Limpar dados antigos se for novo relatório
-        clearNewReportData();
-
         // Criar indicador visual
         createSaveIndicator();
 
-        // 🔒 PASSO 1: Inicializar sessão de formulário isolada
-        initFormSession()
+        // 1. Limpar dados antigos se for novo relatório
+        // 2. Inicializar sessão e carregar rascunho
+        clearNewReportData()
+            .then(() => initFormSession())
             .then(() => {
                 console.log('[AUTOSAVE SQL] ✅ Form session ready, proceeding with autosave init');
                 initAttempts = 0; // Reset contador
@@ -628,7 +603,7 @@
                 epcSelect.value = data.epc_id;
 
                 // Depois, carregar os representatives desse EPC
-                fetch(`ajax/get_representatives.php?epc_id=${data.epc_id}`)
+                fetch((window.BASE_URL || "") + `ajax/get_representatives.php?epc_id=${data.epc_id}`)
                     .then(response => response.json())
                     .then(reps => {
                         repSelect.innerHTML = '<option value="">Select Representative...</option>';

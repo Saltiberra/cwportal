@@ -161,7 +161,7 @@ function saveFormData(form) {
     // Save to database via AJAX instead of localStorage
     const reportId = getReportId();
     if (reportId) {
-        fetch('ajax/save_form_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_form_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -231,7 +231,7 @@ function loadSavedFormData() {
             }
 
             // Load saved data from database via AJAX
-            fetch(`ajax/load_form_draft.php?report_id=${encodeURIComponent(reportId)}&form_id=${encodeURIComponent(formId)}`)
+            fetch((window.BASE_URL || "") + `ajax/load_form_draft.php?report_id=${encodeURIComponent(reportId)}&form_id=${encodeURIComponent(formId)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.form_data) {
@@ -344,7 +344,7 @@ function loadModulesFromLocalStorage() {
             const reportId = getReportId();
             if (reportId) {
                 // Load from database instead of localStorage
-                fetch(`ajax/load_modules_draft.php?report_id=${encodeURIComponent(reportId)}`)
+                fetch((window.BASE_URL || "") + `ajax/load_modules_draft.php?report_id=${encodeURIComponent(reportId)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.modules_data) {
@@ -390,7 +390,7 @@ function loadModulesFromLocalStorage() {
             const reportId = getReportId();
             if (reportId) {
                 // Load from database instead of localStorage
-                fetch(`ajax/load_layouts_draft.php?report_id=${encodeURIComponent(reportId)}`)
+                fetch((window.BASE_URL || "") + `ajax/load_layouts_draft.php?report_id=${encodeURIComponent(reportId)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.layouts_data) {
@@ -429,7 +429,7 @@ function loadModulesFromLocalStorage() {
             const reportId = getReportId();
             if (reportId) {
                 // Load from database instead of localStorage
-                fetch(`ajax/load_protection_draft.php?report_id=${encodeURIComponent(reportId)}`)
+                fetch((window.BASE_URL || "") + `ajax/load_protection_draft.php?report_id=${encodeURIComponent(reportId)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.protection_data) {
@@ -468,7 +468,7 @@ function loadModulesFromLocalStorage() {
             const reportId = getReportId();
             if (reportId) {
                 // Load from database instead of localStorage
-                fetch(`ajax/load_protection_cables_draft.php?report_id=${encodeURIComponent(reportId)}`)
+                fetch((window.BASE_URL || "") + `ajax/load_protection_cables_draft.php?report_id=${encodeURIComponent(reportId)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.protection_cables_data) {
@@ -542,7 +542,7 @@ function initEpcRepresentativeDropdowns() {
     if (!isNewReport) {
         try {
             // Load EPC selection from database draft
-            fetch('ajax/load_epc_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_epc_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.epc_id && !preSelectedEpcId) {
@@ -555,7 +555,7 @@ function initEpcRepresentativeDropdowns() {
                 });
 
             // Load Representative selection from database draft
-            fetch('ajax/load_representative_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_representative_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.representative_id && !preSelectedRepId) {
@@ -602,7 +602,7 @@ function initEpcRepresentativeDropdowns() {
     // Load EPC options
     setLoadingState(epcSelect, true);
 
-    fetch('ajax/get_epcs.php')
+    fetch((window.BASE_URL || '') + 'ajax/get_epcs.php')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -612,6 +612,15 @@ function initEpcRepresentativeDropdowns() {
         .then(data => {
             setLoadingState(epcSelect, false);
             epcSelect.innerHTML = '<option value="">Select EPC...</option>';
+
+            // Ensure data is an array before iterating
+            if (!Array.isArray(data)) {
+                console.error('[EPC] Unexpected response format (expected array):', data);
+                if (data && data.error) {
+                    console.error('[EPC] Server error:', data.error);
+                }
+                return;
+            }
 
             // Add new options
             data.forEach(epc => {
@@ -625,7 +634,7 @@ function initEpcRepresentativeDropdowns() {
             if (restoreSelection(epcSelect, preSelectedEpcId, () => {
                 // Save to database draft if not in edit mode
                 if (!isNewReport) {
-                    fetch('ajax/save_epc_draft.php', {
+                    fetch((window.BASE_URL || '') + 'ajax/save_epc_draft.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -644,7 +653,7 @@ function initEpcRepresentativeDropdowns() {
             } else {
                 // Try to load from database draft if not in edit mode
                 if (!isNewReport) {
-                    fetch('ajax/load_epc_draft.php')
+                    fetch((window.BASE_URL || '') + 'ajax/load_epc_draft.php')
                         .then(response => response.json())
                         .then(data => {
                             if (data.success && data.epc_id) {
@@ -689,7 +698,7 @@ function initEpcRepresentativeDropdowns() {
 
         setLoadingState(repSelect, true);
 
-        fetch(`ajax/get_representatives.php?epc_id=${epcId}`)
+        fetch((window.BASE_URL || "") + `ajax/get_representatives.php?epc_id=${epcId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -759,7 +768,7 @@ function initEpcRepresentativeDropdowns() {
         // Save to database draft if not in edit mode
         if (!isNewReport) {
             if (selectedEpcId) {
-                fetch('ajax/save_epc_draft.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_epc_draft.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -781,7 +790,7 @@ function initEpcRepresentativeDropdowns() {
                     });
             } else {
                 // Clear EPC selection
-                fetch('ajax/save_epc_draft.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_epc_draft.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -795,7 +804,7 @@ function initEpcRepresentativeDropdowns() {
                     });
             }
             // Clear previously selected representative when EPC changes
-            fetch('ajax/save_representative_draft.php', {
+            fetch((window.BASE_URL || '') + 'ajax/save_representative_draft.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -819,7 +828,7 @@ function initEpcRepresentativeDropdowns() {
         // Save to database draft if not in edit mode
         if (!isNewReport) {
             if (selectedRepId) {
-                fetch('ajax/save_representative_draft.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_representative_draft.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -841,7 +850,7 @@ function initEpcRepresentativeDropdowns() {
                     });
             } else {
                 // Clear representative selection
-                fetch('ajax/save_representative_draft.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_representative_draft.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -870,7 +879,7 @@ function initEpcRepresentativeDropdowns() {
     // Load representative selection from database draft if not in edit mode
     if (!isNewReport) {
         console.log('[REP] Loading representative selection from database draft...');
-        fetch('ajax/load_representative_draft.php')
+        fetch((window.BASE_URL || '') + 'ajax/load_representative_draft.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.representative_id) {
@@ -967,13 +976,7 @@ function loadEquipmentModels(type, brandId, targetElement) {
     console.log(`DEBUG: Loading models for ${type}, brand ID ${brandId}, target ${targetElement}`);
 
     // Get base URL for AJAX requests
-    const baseUrl = window.location.hostname === 'localhost' && window.location.port === '8000'
-        ? ''
-        : window.location.pathname.includes('index.php')
-            ? ''
-            : window.location.pathname.includes('ComissionamentoV2')
-                ? '/ComissionamentoV2/'
-                : '/';
+    const baseUrl = window.BASE_URL || '/';
 
     // Make AJAX request and return the promise
     const url = `${baseUrl}ajax/get_equipment_models.php?type=${type}&brand_id=${brandId}`;
@@ -1142,7 +1145,7 @@ function initModulesTable() {
             const modelId = this.value;
             if (modelId) {
                 // Fetch power options for the selected model
-                fetch(`ajax/get_module_power.php?model_id=${modelId}`)
+                fetch((window.BASE_URL || "") + `ajax/get_module_power.php?model_id=${modelId}`)
                     .then(response => response.json())
                     .then(modelData => {
                         // Store power options in a global variable for later use
@@ -1431,7 +1434,7 @@ function addNewBrand(modal) {
     saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
 
     // Send request to add brand
-    fetch('ajax/add_equipment_brand.php', {
+    fetch((window.BASE_URL || '') + 'ajax/add_equipment_brand.php', {
         method: 'POST',
         body: formData
     })
@@ -1467,7 +1470,8 @@ function addNewBrand(modal) {
                 const alternativeIds = [
                     `${equipmentType}_brand`,
                     `new_${equipmentType}_brand`,
-                    `protection_${equipmentType}_brand`
+                    `protection_${equipmentType}_brand`,
+                    `protection_circuit_brand` // Support for Protection tab circuit breaker
                 ];
                 for (const altId of alternativeIds) {
                     selectElement = document.getElementById(altId);
@@ -1547,30 +1551,54 @@ function showAddModelModal(equipmentType) {
 
     // Get the selected brand
     let brandSelect;
-    if (equipmentType === 'pv_module') {
-        brandSelect = document.getElementById('new_module_brand');
-    } else if (equipmentType === 'inverter') {
-        brandSelect = document.getElementById('new_inverter_brand');
-    } else if (equipmentType === 'circuit_breaker') {
-        brandSelect = document.getElementById('new_circuit_breaker_brand');
-    } else if (equipmentType === 'differential') {
-        brandSelect = document.getElementById('new_differential_brand');
-    } else if (equipmentType === 'meter') {
-        brandSelect = document.getElementById('meter_brand');
-    } else if (equipmentType === 'energy_meter') {
-        brandSelect = document.getElementById('energy_meter_brand');
+    const dropdownMapping = {
+        'pv_module': 'new_module_brand',
+        'inverter': 'new_inverter_brand',
+        'circuit_breaker': 'new_circuit_breaker_brand',
+        'differential': 'new_differential_brand',
+        'meter': 'meter_brand',
+        'energy_meter': 'energy_meter_brand'
+    };
+
+    let selectElementId = dropdownMapping[equipmentType];
+    brandSelect = selectElementId ? document.getElementById(selectElementId) : null;
+
+    // If specific dropdown not found or is empty, try to find any dropdown for this equipment type that has a value
+    if (!brandSelect || !brandSelect.value) {
+        // More comprehensive list of possible IDs based on the various tabs
+        const alternativeIds = [
+            `new_${equipmentType}_brand`,
+            `${equipmentType}_brand`,
+            `protection_${equipmentType}_brand`,
+            `protection_circuit_brand`, // Support for Protection tab circuit breaker
+            `new_module_brand`, // Special case for pv_module
+            `meter_brand`, // Special case for meter
+            `energy_meter_brand` // Special case for energy_meter
+        ];
+
+        for (const altId of alternativeIds) {
+            const altSelect = document.getElementById(altId);
+            if (altSelect && altSelect.value) {
+                // Verify this altSelect actually belongs to the correct equipment type if possible
+                brandSelect = altSelect;
+                console.log(`[showAddModelModal] Found alternative brand selection in #${altId} for ${equipmentType}`);
+                break;
+            }
+        }
     }
 
-    // For energy_meter, the button is disabled when no brand is selected, so this check is redundant
-    // But keep it for other equipment types that might not have this logic
-    if (equipmentType !== 'energy_meter' && (!brandSelect || !brandSelect.value)) {
+    // Check one last time if we found something
+    if (!brandSelect || !brandSelect.value) {
+        console.warn(`[showAddModelModal] No brand selection found for ${equipmentType}`);
         showNotification('Please select a brand first', 'warning');
         window.addModelModalOpen = false;
         return;
     }
 
     const brandId = brandSelect.value;
-    const brandName = brandSelect.options[brandSelect.selectedIndex].text;
+    const brandName = brandSelect.selectedIndex >= 0 ?
+        brandSelect.options[brandSelect.selectedIndex].text :
+        'Selected Brand';
 
     // Equipment type display name
     const typeDisplayName = equipmentType === 'pv_module' ? 'PV Module' :
@@ -1580,31 +1608,16 @@ function showAddModelModal(equipmentType) {
     // Check if modal already exists and update it instead of creating new one
     let modal = document.getElementById('addModelModal');
     if (modal) {
-        // Update existing modal
-        modal.querySelector('.modal-title').textContent = `Add New ${typeDisplayName} Model`;
-        const alertDiv = modal.querySelector('.alert-info');
-        if (alertDiv) alertDiv.innerHTML = `<i class="fas fa-info-circle me-2"></i>Adding new model for brand: <strong>${brandName}</strong>`;
-        document.getElementById('equipment_type').value = equipmentType;
-        document.getElementById('brand_id').value = brandId;
-        document.getElementById('model_name').value = '';
-        document.getElementById('model_name').classList.remove('is-invalid');
-        // Clear other fields based on equipment type
-        if (equipmentType === 'pv_module') {
-            document.getElementById('power_options').value = '';
-            document.getElementById('characteristics').value = '';
-        } else if (equipmentType === 'inverter') {
-            document.getElementById('nominal_power').value = '';
-            document.getElementById('max_output_current').value = '';
-            document.getElementById('mppts').value = '1';
-            document.getElementById('strings_per_mppt').value = '1';
-        }
-        // Add more field clearing as needed
-    } else {
-        // Create different forms based on equipment type
-        let formFields = '';
+        // Clear existing modal and let it be recreated below to avoid field mismatch
+        modal.remove();
+        modal = null;
+    }
 
-        if (equipmentType === 'pv_module') {
-            formFields = `
+    // Create different forms based on equipment type
+    let formFields = '';
+
+    if (equipmentType === 'pv_module') {
+        formFields = `
                 <div class="mb-3">
                     <label for="model_name" class="form-label">Model Name</label>
                     <input type="text" class="form-control" id="model_name" required>
@@ -1623,8 +1636,8 @@ function showAddModelModal(equipmentType) {
                         placeholder="e.g., Mono-PERC, Half-cell, etc."></textarea>
                 </div>
             `;
-        } else if (equipmentType === 'inverter') {
-            formFields = `
+    } else if (equipmentType === 'inverter') {
+        formFields = `
                 <div class="mb-3">
                     <label for="model_name" class="form-label">Model Name</label>
                     <input type="text" class="form-control" id="model_name" required>
@@ -1660,8 +1673,8 @@ function showAddModelModal(equipmentType) {
                     </div>
                 </div>
             `;
-        } else if (equipmentType === 'circuit_breaker') {
-            formFields = `
+    } else if (equipmentType === 'circuit_breaker') {
+        formFields = `
                 <div class="mb-3">
                     <label for="model_name" class="form-label">Model Name</label>
                     <input type="text" class="form-control" id="model_name" required>
@@ -1687,8 +1700,8 @@ function showAddModelModal(equipmentType) {
                     </div>
                 </div>
             `;
-        } else if (equipmentType === 'differential') {
-            formFields = `
+    } else if (equipmentType === 'differential') {
+        formFields = `
                 <div class="mb-3">
                     <label for="model_name" class="form-label">Model Name</label>
                     <input type="text" class="form-control" id="model_name" required>
@@ -1714,8 +1727,8 @@ function showAddModelModal(equipmentType) {
                     </div>
                 </div>
             `;
-        } else if (equipmentType === 'meter') {
-            formFields = `
+    } else if (equipmentType === 'meter') {
+        formFields = `
                 <div class="mb-3">
                     <label for="model_name" class="form-label">Model Name</label>
                     <input type="text" class="form-control" id="model_name" required>
@@ -1727,18 +1740,18 @@ function showAddModelModal(equipmentType) {
                         placeholder="e.g., Smart meter, 3-phase, communication protocol, etc."></textarea>
                 </div>
             `;
-        } else if (equipmentType === 'energy_meter') {
-            formFields = `
+    } else if (equipmentType === 'energy_meter') {
+        formFields = `
                 <div class="mb-3">
                     <label for="model_name" class="form-label">Model Name</label>
                     <input type="text" class="form-control" id="model_name" required>
                     <div class="invalid-feedback">Please provide a model name</div>
                 </div>
             `;
-        }
+    }
 
-        // Create modal HTML
-        let modalHtml = `
+    // Create modal HTML
+    let modalHtml = `
             <div class="modal fade" id="addModelModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -1766,13 +1779,12 @@ function showAddModelModal(equipmentType) {
             </div>
         `;
 
-        // Add modal to document
-        const modalContainer = document.createElement('div');
-        modalContainer.innerHTML = modalHtml;
-        document.body.appendChild(modalContainer);
+    // Add modal to document
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHtml;
+    document.body.appendChild(modalContainer);
 
-        modal = document.getElementById('addModelModal');
-    }
+    modal = document.getElementById('addModelModal');
 
     // Initialize the modal
     const bsModal = new bootstrap.Modal(modal);
@@ -1815,6 +1827,7 @@ function showAddModelModal(equipmentType) {
  * @param {string} equipmentType - Type of equipment (pv_module, inverter)
  */
 function addNewModel(modal, equipmentType) {
+    if (!window.BASE_URL) console.warn('BASE_URL not defined in addNewModel');
     const modelNameInput = document.getElementById('model_name');
     const modelName = modelNameInput.value.trim();
     const brandId = document.getElementById('brand_id').value;
@@ -1893,7 +1906,7 @@ function addNewModel(modal, equipmentType) {
     saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
 
     // Send request to add model
-    fetch('ajax/add_equipment_model.php', {
+    fetch((window.BASE_URL || '') + 'ajax/add_equipment_model.php', {
         method: 'POST',
         body: formData
     })
@@ -1917,16 +1930,27 @@ function addNewModel(modal, equipmentType) {
                 'energy_meter': 'energy_meter_model'
             };
 
-            const selectElementId = modelDropdownMapping[equipmentType];
-            const selectElement = selectElementId ? document.getElementById(selectElementId) : null;
+            // Find all potential selects for this equipment type
+            const alternativeModelIds = [
+                modelDropdownMapping[equipmentType],
+                `new_${equipmentType}_model`,
+                `${equipmentType}_model`,
+                `protection_${equipmentType}_model`,
+                `protection_circuit_model`
+            ];
+
+            let selectorList = [];
+            alternativeModelIds.forEach(id => {
+                if (!id) return;
+                const matches = document.querySelectorAll(`select[id^="${id}"]`);
+                matches.forEach(m => {
+                    if (!selectorList.includes(m)) selectorList.push(m);
+                });
+            });
 
             // Refresh the model dropdown from server to ensure consistency across UI
             // and then select the newly added model
-            if (selectElement) {
-                // Find all selects with same base id (including suffixed ones created dynamically)
-                const baseId = selectElementId;
-                const selectorList = document.querySelectorAll(`select[id^="${baseId}"]`);
-
+            if (selectorList.length > 0) {
                 selectorList.forEach(sel => {
                     // Deduce the corresponding brand select id by replacing 'model' with 'brand'
                     const brandSelectId = sel.id.replace('model', 'brand');
@@ -2257,12 +2281,7 @@ function loadEquipmentBrands(type, targetElement) {
     target.disabled = true;
 
     // Get base URL for AJAX requests - detect from current path
-    let baseUrl = '';
-    const pathParts = window.location.pathname.split('/').filter(p => p);
-    if (pathParts.length > 0 && pathParts[0] !== 'ajax') {
-        // We're in a subdirectory like /cleanwattsportal/ or /ComissionamentoV2/
-        baseUrl = '/' + pathParts[0] + '/';
-    }
+    let baseUrl = window.BASE_URL || '/';
 
     // Make AJAX request
     const url = `${baseUrl}ajax/get_equipment_brands.php?type=${type}`;
@@ -2325,7 +2344,7 @@ function addModuleToTable() {
     }
 
     // Fetch module power data directly from database
-    fetch(`ajax/get_module_power.php?model_id=${modelId}`)
+    fetch((window.BASE_URL || "") + `ajax/get_module_power.php?model_id=${modelId}`)
         .then(response => response.json())
         .then(modelData => {
             // Create module object with power data from database
@@ -2710,7 +2729,7 @@ function editModule(index) {
                 const modelSelect = document.getElementById('new_module_model');
                 modelSelect.value = module.model_id;
                 if (module.model_id) {
-                    fetch(`ajax/get_module_power.php?model_id=${module.model_id}`)
+                    fetch((window.BASE_URL || "") + `ajax/get_module_power.php?model_id=${module.model_id}`)
                         .then(response => response.json())
                         .then(modelData => {
                             window.currentPowerOptions = modelData.power_options || null;
@@ -2730,7 +2749,7 @@ function editModule(index) {
                 const modelSelect = document.getElementById('new_module_model');
                 modelSelect.value = module.model_id;
                 if (module.model_id) {
-                    fetch(`ajax/get_module_power.php?model_id=${module.model_id}`)
+                    fetch((window.BASE_URL || "") + `ajax/get_module_power.php?model_id=${module.model_id}`)
                         .then(response => response.json())
                         .then(modelData => {
                             window.currentPowerOptions = modelData.power_options || null;
@@ -2751,7 +2770,7 @@ function editModule(index) {
             const modelSelect = document.getElementById('new_module_model');
             modelSelect.value = module.model_id;
             if (module.model_id) {
-                fetch(`ajax/get_module_power.php?model_id=${module.model_id}`)
+                fetch((window.BASE_URL || "") + `ajax/get_module_power.php?model_id=${module.model_id}`)
                     .then(response => response.json())
                     .then(modelData => {
                         window.currentPowerOptions = modelData.power_options || null;
@@ -3734,7 +3753,7 @@ function deleteInverter(index) {
             // If inverter exists in DB, call server to delete the report_equipment row
             if (hasDbId) {
                 const idToDelete = inverter.id || inverter.inverter_id;
-                fetch('ajax/delete_item.php', {
+                fetch((window.BASE_URL || '') + 'ajax/delete_item.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ table: 'report_equipment', id: idToDelete })
@@ -3888,7 +3907,7 @@ function generateStringMeasurementTable(inverterId, targetContainerId, inverterD
     container.innerHTML = '<div class="text-center p-3"><div class="spinner-border text-primary" role="status"></div><div class="mt-2">Loading...</div></div>';
 
     // Make AJAX request
-    fetch(`ajax/get_inverter_data.php?inverter_id=${inverterId}`)
+    fetch((window.BASE_URL || "") + `ajax/get_inverter_data.php?inverter_id=${inverterId}`)
         .then(response => response.json())
         .then(data => {
             // Generate the measurement table
@@ -4016,7 +4035,7 @@ function searchDatasheets(brand, model, type) {
         formData.append('model', model);
         formData.append('type', type);
 
-        fetch('ajax/get_datasheet_links.php', {
+        fetch((window.BASE_URL || '') + 'ajax/get_datasheet_links.php', {
             method: 'POST',
             body: formData
         })
@@ -4290,7 +4309,7 @@ function updateLayoutsTable() {
 
     // In new report mode, save to database draft instead of localStorage
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-        fetch('ajax/save_layouts_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_layouts_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -4359,7 +4378,7 @@ function saveSystemLayoutToSQL() {
     // FIRST: Sync hidden field with current layoutsList
     updateLayoutsHidden();
 
-    fetch('ajax/save_system_layout.php', {
+    fetch((window.BASE_URL || '') + 'ajax/save_system_layout.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -4558,6 +4577,8 @@ window.loadExistingPunchList = function () {
 
     console.log('[loadExistingPunchList] Mapped punchListItems:', punchListItems);
 
+    ensurePunchUids(punchListItems);
+
     // Update the table
     if (typeof renderPunchListTable === 'function') {
         renderPunchListTable();
@@ -4711,7 +4732,7 @@ function updateProtectionTable() {
     // In edit mode we persist via SQL only; optionally use localStorage only outside edit mode
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
         // Save to database draft instead of localStorage
-        fetch('ajax/save_protection_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_protection_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -4884,7 +4905,7 @@ function updateProtectionCablesTable() {
     // In edit mode we persist via SQL only; optionally use localStorage only outside edit mode
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
         // Save to database draft instead of localStorage
-        fetch('ajax/save_protection_cables_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_protection_cables_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -5378,7 +5399,7 @@ function updateClampMeasurementsHidden() {
     hidden.value = JSON.stringify(clampMeasurements);
 
     // Save to database draft instead of localStorage
-    fetch('ajax/save_clamp_measurements_draft.php', {
+    fetch((window.BASE_URL || '') + 'ajax/save_clamp_measurements_draft.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -5491,10 +5512,13 @@ function addPunchListFromForm() {
     renderPunchListTable();
     // Persist to hidden
     const hidden = document.getElementById('punch_list_data');
-    if (hidden) hidden.value = JSON.stringify(punchListItems);
+    if (hidden) {
+        hidden.value = JSON.stringify(punchListItems);
+        if (typeof window.triggerAutosave === 'function') window.triggerAutosave();
+    }
     // Save to database draft if not in edit mode
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-        fetch('ajax/save_punch_list_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_punch_list_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -5639,10 +5663,13 @@ function renderPunchListTable() {
             punchListItems.splice(origIdx, 1);
             renderPunchListTable();
             const hidden = document.getElementById('punch_list_data');
-            if (hidden) hidden.value = JSON.stringify(punchListItems);
+            if (hidden) {
+                hidden.value = JSON.stringify(punchListItems);
+                if (typeof window.triggerAutosave === 'function') window.triggerAutosave();
+            }
             // Save to database draft if not in edit mode
             if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-                fetch('ajax/save_punch_list_draft.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_punch_list_draft.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -5774,7 +5801,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // In edit mode, prioritize window.existingEnergyMeters from SQL
         if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-            fetch('ajax/load_energy_meters_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_energy_meters_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && Array.isArray(data.energy_meters) && data.energy_meters.length > 0) {
@@ -5917,7 +5944,7 @@ function updateEnergyMetersHidden() {
     }
     // Save to database draft if not in edit mode
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-        fetch('ajax/save_energy_meters_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_energy_meters_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -6101,7 +6128,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let loaded = false;
             if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
                 try {
-                    fetch('ajax/load_clamp_measurements_draft.php')
+                    fetch((window.BASE_URL || '') + 'ajax/load_clamp_measurements_draft.php')
                         .then(response => response.json())
                         .then(data => {
                             if (data.success && Array.isArray(data.clamp_measurements) && data.clamp_measurements.length > 0) {
@@ -6417,7 +6444,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // In edit mode, skip database draft and prefer hidden input
         if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-            fetch('ajax/load_telemetry_meters_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_telemetry_meters_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && Array.isArray(data.telemetry_meters) && data.telemetry_meters.length > 0) {
@@ -6450,7 +6477,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Try database draft first only if NOT in edit mode
         if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-            fetch('ajax/load_communications_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_communications_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && Array.isArray(data.communications) && data.communications.length > 0) {
@@ -6482,7 +6509,7 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
         const hiddenCred = document.getElementById('telemetry_credential_data');
         if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-            fetch('ajax/load_telemetry_credentials_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_telemetry_credentials_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && Array.isArray(data.telemetry_credentials) && data.telemetry_credentials.length > 0) {
@@ -6544,7 +6571,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const payload = { earth_resistance: raw };
                 if (reportIdEl2 && reportIdEl2.value) payload.report_id = reportIdEl2.value;
 
-                fetch('ajax/save_earth_resistance_draft.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_earth_resistance_draft.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -6601,7 +6628,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loaded = true;
         } else if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
             // Load from database draft if not in edit mode
-            fetch('ajax/load_punch_list_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_punch_list_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && Array.isArray(data.punch_list) && data.punch_list.length > 0) {
@@ -6722,7 +6749,7 @@ function updateTelemetryCredentialsHidden() {
 
     // Save to database draft if not in edit mode
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-        fetch('ajax/save_telemetry_credentials_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_telemetry_credentials_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -6835,7 +6862,7 @@ function updateTelemetryMetersHidden() {
     if (hidden) hidden.value = JSON.stringify(telemetryMeters);
     // Save to database draft if not in edit mode
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-        fetch('ajax/save_telemetry_meters_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_telemetry_meters_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -6946,7 +6973,7 @@ function updateCommunicationsHidden() {
     if (hidden) hidden.value = JSON.stringify(communicationsDevices);
     // Save to database draft if not in edit mode
     if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-        fetch('ajax/save_communications_draft.php', {
+        fetch((window.BASE_URL || '') + 'ajax/save_communications_draft.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -6983,9 +7010,13 @@ function loadCommunicationsModels(equipmentType) {
     if (!equipmentType) return;
 
     // Fetch models from server
-    fetch(`ajax/get_communications_models.php?equipment_type=${encodeURIComponent(equipmentType)}`)
+    fetch((window.BASE_URL || "") + `ajax/get_communications_models.php?equipment_type=${encodeURIComponent(equipmentType)}`)
         .then(response => response.json())
         .then(models => {
+            if (!Array.isArray(models)) {
+                console.error('[Comm] Unexpected response format:', models);
+                return;
+            }
             models.forEach(model => {
                 const option = document.createElement('option');
                 option.value = model.id;
@@ -7198,7 +7229,7 @@ function initNotesPersistence() {
     // Restore from database draft if present (highest priority)
     try {
         if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-            fetch('ajax/load_notes_draft.php')
+            fetch((window.BASE_URL || '') + 'ajax/load_notes_draft.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.notes) {
@@ -7217,7 +7248,7 @@ function initNotesPersistence() {
     // Save on change and keyup (debounced by existing autosave, but we also keep dedicated key)
     notesEl.addEventListener('change', function () {
         if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-            fetch('ajax/save_notes_draft.php', {
+            fetch((window.BASE_URL || '') + 'ajax/save_notes_draft.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -7243,7 +7274,7 @@ function initNotesPersistence() {
         const reportIdEl = document.querySelector('input[name="report_id"]');
         if (reportIdEl && reportIdEl.value) {
             // fire and forget
-            fetch('ajax/save_additional_note.php', {
+            fetch((window.BASE_URL || '') + 'ajax/save_additional_note.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
                 body: `report_id=${encodeURIComponent(reportIdEl.value)}&notes=${encodeURIComponent(notesEl.value)}`
@@ -7258,7 +7289,7 @@ function initNotesPersistence() {
         clearTimeout(typingTimer);
         typingTimer = setTimeout(function () {
             if (!window.EDIT_MODE_SKIP_LOCALSTORAGE) {
-                fetch('ajax/save_notes_draft.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_notes_draft.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -7283,7 +7314,7 @@ function initNotesPersistence() {
             const reportIdEl = document.querySelector('input[name="report_id"]');
             if (reportIdEl && reportIdEl.value) {
                 // debounce server save separately
-                fetch('ajax/save_additional_note.php', {
+                fetch((window.BASE_URL || '') + 'ajax/save_additional_note.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
                     body: `report_id=${encodeURIComponent(reportIdEl.value)}&notes=${encodeURIComponent(notesEl.value)}`
@@ -7307,7 +7338,7 @@ function initCommissioningResponsibleDropdown() {
     const preSelectedId = select.dataset.selected || '';
     console.log('[COMM-RESP] Initializing... Pre-selected:', preSelectedId);
 
-    fetch('ajax/get_commissioning_responsibles.php')
+    fetch((window.BASE_URL || '') + 'ajax/get_commissioning_responsibles.php')
         .then(response => response.json())
         .then(data => {
             select.innerHTML = '<option value="">Select Responsible...</option>';
@@ -7344,7 +7375,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function saveModulesDraftToSQL() {
     console.log('[saveModulesDraftToSQL] Saving ' + modulesList.length + ' modules to database draft');
 
-    fetch('ajax/save_modules_draft.php', {
+    fetch((window.BASE_URL || '') + 'ajax/save_modules_draft.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

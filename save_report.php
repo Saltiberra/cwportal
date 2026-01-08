@@ -896,7 +896,7 @@ try {
                 $mppt = isset($string['mppt']) ? $string['mppt'] : '';
                 $stringNum = isset($string['string_num']) ? $string['string_num'] : '';
                 $voc = isset($string['voc']) ? $string['voc'] : '';
-                $isc = isset($string['isc']) ? $string['isc'] : '';
+                $isc = isset($string['isc']) ? $string['isc'] : (isset($string['current']) ? $string['current'] : '');
                 $vmp = isset($string['vmp']) ? $string['vmp'] : '';
                 $imp = isset($string['imp']) ? $string['imp'] : '';
                 $rins = isset($string['rins']) ? $string['rins'] : '';
@@ -904,7 +904,7 @@ try {
                 $temp = isset($string['temp']) ? $string['temp'] : '';
                 $rlo = isset($string['rlo']) ? $string['rlo'] : '';
                 $notes = isset($string['notes']) ? $string['notes'] : '';
-                $current = isset($string['current']) ? $string['current'] : '';
+                $current = isset($string['current']) ? $string['current'] : (isset($string['isc']) ? $string['isc'] : '');
                 // Preserve raw user input strings for numeric fields (do not normalize)
                 foreach (['voc', 'isc', 'vmp', 'imp', 'rins', 'irr', 'temp', 'rlo', 'current'] as $numKey) {
                     if (isset($$numKey) && is_string($$numKey)) {
@@ -1020,21 +1020,22 @@ try {
     $pdo->commit();
     error_log("[SAVE_REPORT] COMMIT success - reportId={$reportId}");
 
+    // Get the actual session ID for cleanup
+    $actualSessionId = $_SESSION['draft_session_id'] ?? session_id();
+
     //  Limpar apenas o rascunho deste relatório nesta sessão (evitar apagar rascunhos de outros relatórios em paralelo)
-    if ($reportId && isset($_SESSION['draft_session_id'])) {
+    if ($reportId) {
         try {
             $stmt = $pdo->prepare("DELETE FROM report_drafts WHERE report_id = ? AND session_id = ?");
-            safeExecute($stmt, [$reportId, $_SESSION['draft_session_id']]);
+            safeExecute($stmt, [$reportId, $actualSessionId]);
         } catch (Exception $e) {
         }
     }
     // Optional: clean up orphaned drafts from this session without report_id (new report)
-    if (isset($_SESSION['draft_session_id'])) {
-        try {
-            $stmt = $pdo->prepare("DELETE FROM report_drafts WHERE session_id = ? AND (report_id IS NULL OR report_id = 0)");
-            safeExecute($stmt, [$_SESSION['draft_session_id']]);
-        } catch (Exception $e) {
-        }
+    try {
+        $stmt = $pdo->prepare("DELETE FROM report_drafts WHERE session_id = ? AND (report_id IS NULL OR report_id = 0)");
+        safeExecute($stmt, [$actualSessionId]);
+    } catch (Exception $e) {
     }
 
     // Redirect to report generation with appropriate success message

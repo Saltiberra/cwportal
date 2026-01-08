@@ -945,7 +945,10 @@ $protectionItems = array_filter(
                                 <td><?php echo htmlspecialchars($m['mppt'] ?? '-'); ?></td>
                                 <td><?php echo htmlspecialchars($m['string_num'] ?? '-'); ?></td>
                                 <td><?php echo ($m['voc'] !== null && $m['voc'] !== '') ? htmlspecialchars((string)$m['voc']) : '-'; ?></td>
-                                <td><?php echo ($m['current'] !== null && $m['current'] !== '') ? htmlspecialchars((string)$m['current']) : '-'; ?></td>
+                                <?php
+                                $currentVal = ($m['current'] !== null && $m['current'] !== '') ? $m['current'] : ($m['isc'] ?? '');
+                                ?>
+                                <td><?php echo ($currentVal !== null && $currentVal !== '') ? htmlspecialchars((string)$currentVal) : '-'; ?></td>
                                 <td><?php echo ($m['rins'] !== null && $m['rins'] !== '') ? htmlspecialchars((string)$m['rins']) : '-'; ?></td>
                                 <td><?php echo ($m['irr'] !== null && $m['irr'] !== '') ? htmlspecialchars((string)$m['irr']) : '-'; ?></td>
                                 <td><?php echo ($m['temp'] !== null && $m['temp'] !== '') ? htmlspecialchars((string)$m['temp']) : '-'; ?></td>

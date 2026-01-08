@@ -53,6 +53,9 @@
     <!-- Only load commission form scripts if we're on comissionamento.php -->
     <?php if (basename($_SERVER['PHP_SELF']) === 'comissionamento.php'): ?>
         <script src="assets/js/custom_modals.js?v=2"></script>
+        <script src="assets/js/dropdown-handler.js?v=3"></script>
+        <script src="assets/js/dropdown-persistence-fix.js?v=1"></script>
+        <script src="assets/js/progressive_save.js?v=1.0"></script>
         <script src="assets/js/main.js?v=4"></script>
         <script src="assets/js/inverter_cards.js?v=1"></script>
         <script src="assets/js/module_table.js?v=2"></script>
@@ -67,7 +70,7 @@
         <!-- 🔥 CRITICAL: Real-time autosave for string measurements to SQL -->
         <script src="assets/js/string_autosave.js?v=2"></script>
         <!-- 🔥 CRITICAL: Autosave to SQL every 5 seconds (prevents data loss after cache clear) -->
-        <script src="assets/js/autosave_sql.js?v=2"></script>
+        <script src="assets/js/autosave_sql.js?v=3"></script>
         <!-- Loading overlay controller (must come after main and string scripts to listen for events) -->
         <script src="assets/js/loading_overlay.js?v=1"></script>
     <?php endif; ?>
