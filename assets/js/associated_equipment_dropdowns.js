@@ -218,7 +218,7 @@ function loadEquipmentBrands(type, selectId) {
                 console.log(`[Associated Equipment] Recebidas ${brands ? brands.length : 0} marcas para ${type}:`, brands);
 
                 if (!Array.isArray(brands)) {
-                     throw new Error('Response is not an array');
+                    throw new Error('Response is not an array');
                 }
 
                 // Clear invalid options and add default
