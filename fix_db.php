@@ -26,20 +26,18 @@ try {
         echo "Column 'notes' already exists.<br>";
     }
 
-     // 3. Check and Add current column if missing
-     echo "Checking 'current' column...<br>";
-     $stmt = $pdo->query("SHOW COLUMNS FROM mppt_string_measurements LIKE 'current'");
-     if ($stmt->rowCount() == 0) {
-         echo "Column missing. Adding 'current'...<br>";
-         $pdo->exec("ALTER TABLE mppt_string_measurements ADD COLUMN current VARCHAR(64) NULL");
-         echo "Column 'current' added successfully.<br>";
-     } else {
-         echo "Column 'current' already exists.<br>";
-     }
+    // 3. Check and Add current column if missing
+    echo "Checking 'current' column...<br>";
+    $stmt = $pdo->query("SHOW COLUMNS FROM mppt_string_measurements LIKE 'current'");
+    if ($stmt->rowCount() == 0) {
+        echo "Column missing. Adding 'current'...<br>";
+        $pdo->exec("ALTER TABLE mppt_string_measurements ADD COLUMN current VARCHAR(64) NULL");
+        echo "Column 'current' added successfully.<br>";
+    } else {
+        echo "Column 'current' already exists.<br>";
+    }
 
     echo "<h3 style='color:green'>Database check/fix complete.</h3>";
-
 } catch (PDOException $e) {
     echo "<h3 style='color:red'>Error: " . $e->getMessage() . "</h3>";
 }
-?>
