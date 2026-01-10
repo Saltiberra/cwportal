@@ -505,11 +505,23 @@ if ($reportId) {
                                 $serverToApply = [];
                                 foreach ($stringMeasurementsFromEquipment as $sm) {
                                     $invIdx = 0;
-                                    if (!empty($existingInverters) && is_array($existingInverters)) {
+                                    // Use explicit inverter_index from DB if available, otherwise fallback to ID matching
+                                    if (isset($sm['inverter_index']) && $sm['inverter_index'] !== null && $sm['inverter_index'] !== '') {
+                                        $invIdx = intval($sm['inverter_index']);
+                                    } elseif (!empty($existingInverters) && is_array($existingInverters)) {
+                                        $matchFound = false;
                                         foreach ($existingInverters as $ii => $inv) {
                                             if (isset($inv['model_id']) && (string)$inv['model_id'] === (string)($sm['inverter_id'] ?? '')) {
                                                 $invIdx = $ii;
+                                                $matchFound = true;
                                                 break;
+                                            }
+                                        }
+                                        // Fallback: Check if inverter_id is in format INVxxx (e.g. INV001 = index 0)
+                                        if (!$matchFound && isset($sm['inverter_id']) && preg_match('/^INV(\d+)$/', $sm['inverter_id'], $matches)) {
+                                            $derivedIndex = intval($matches[1]) - 1;
+                                            if ($derivedIndex >= 0 && $derivedIndex < count($existingInverters)) {
+                                                $invIdx = $derivedIndex;
                                             }
                                         }
                                     }
@@ -1883,6 +1895,12 @@ if ($reportId) {
                                             </div>
                                         </div>
                                         <div class="col-md-2">
+                                            <label for="new_module_power" class="form-label">Power (W)</label>
+                                            <select class="form-select" id="new_module_power">
+                                                <option value="">Select Power...</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
                                             <label for="new_module_quantity" class="form-label">Quantity</label>
                                             <input type="number" inputmode="decimal" pattern="[0-9]*" autocomplete="off" class="form-control" id="new_module_quantity" value="1" min="1">
                                         </div>
@@ -1902,8 +1920,8 @@ if ($reportId) {
                                                 <tr>
                                                     <th>Brand</th>
                                                     <th>Model</th>
-                                                    <th>Quantity</th>
                                                     <th>Power (W)</th>
+                                                    <th>Quantity</th>
                                                     <th>Status</th>
                                                     <th>Datasheet</th>
                                                     <th>Actions</th>
@@ -1931,6 +1949,7 @@ if ($reportId) {
                                                 re.quantity, 
                                                 re.deployment_status as status, 
                                                 re.characteristics,
+                                                re.power_rating,
                                                 pmm.power_options,
                                                 pmm.id as model_id,
                                                 pmb.id as brand_id
@@ -1955,11 +1974,16 @@ if ($reportId) {
                                                 preg_match('/Serial: ([^|]+)/', $module['characteristics'], $matches);
                                                 $module['serial_number'] = isset($matches[1]) ? trim($matches[1]) : '';
 
-                                                // Set power rating from power_options (first value as default)
-                                                $powerOptions = explode(',', $module['power_options']);
-                                                $module['power_rating'] = isset($powerOptions[0]) ? intval(trim($powerOptions[0])) : 0;
+                                                // Set power rating: use saved value from report_equipment if available
+                                                // Otherwise fallback to first value from power_options
+                                                if (!empty($module['power_rating']) && intval($module['power_rating']) > 0) {
+                                                    $module['power_rating'] = intval($module['power_rating']);
+                                                } else {
+                                                    $powerOptions = explode(',', $module['power_options']);
+                                                    $module['power_rating'] = isset($powerOptions[0]) ? intval(trim($powerOptions[0])) : 0;
+                                                }
 
-                                                echo '<script>console.log("[PHP DEBUG] Extracted power_rating from power_options:", ' . $module['power_rating'] . ');</script>';
+                                                echo '<script>console.log("[PHP DEBUG] Final power_rating:", ' . $module['power_rating'] . ');</script>';
                                             }
 
                                             echo '<script>';
@@ -5184,105 +5208,6 @@ if ($reportId) {
     })();
 </script>
 
-
-<!-- Unsaved Changes Modal -->
-<div class="modal fade" id="unsavedChangesModal" tabindex="-1" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title" id="unsavedChangesModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Unsaved Changes
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>You have unsaved changes in your report.</p>
-                <p>Are you sure you want to leave this page without saving?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel (Stay)</button>
-                <button type="button" class="btn btn-danger" id="btnLeaveWithoutSaving">Leave without saving</button>
-                <button type="button" class="btn btn-success" id="btnSaveAndLeave">
-                    <i class="fas fa-save me-1"></i> Save Changes
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let hasUnsavedChanges = false;
-        let intendedDestination = null;
-        const form = document.getElementById('commissioningForm');
-        const modalEl = document.getElementById('unsavedChangesModal');
-
-        // Only proceed if form and modal exist
-        if (form && modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-
-            // Mark changes on any input
-            form.addEventListener('change', () => {
-                hasUnsavedChanges = true;
-            });
-            form.addEventListener('input', () => {
-                hasUnsavedChanges = true;
-            });
-
-            // Reset flag on valid submit (triggered by button click)
-            form.addEventListener('submit', () => {
-                hasUnsavedChanges = false;
-            });
-
-            // Native browser check (for closing tab/window or reloading)
-            window.addEventListener('beforeunload', function(e) {
-                if (hasUnsavedChanges) {
-                    e.preventDefault();
-                    e.returnValue = ''; // Required for Chrome
-                }
-            });
-
-            // Intercept internal links for Custom Modal
-            document.body.addEventListener('click', function(e) {
-                // Find closest anchor tag
-                const link = e.target.closest('a');
-                if (!link) return;
-
-                // Ignore internal links (anchors, javascript calls, new tabs, dowload)
-                const href = link.getAttribute('href');
-                if (!href || href === '#' || href.startsWith('#') || href.startsWith('javascript:') || link.target === '_blank' || link.hasAttribute('download')) return;
-
-                // Check if it's a real navigation (not just a toggle)
-                if (hasUnsavedChanges) {
-                    e.preventDefault();
-                    intendedDestination = href;
-                    modal.show();
-                }
-            });
-
-            // Modal Actions
-            document.getElementById('btnLeaveWithoutSaving').addEventListener('click', function() {
-                hasUnsavedChanges = false; // Disable check
-                modal.hide();
-                if (intendedDestination) {
-                    window.location.href = intendedDestination;
-                }
-            });
-
-            document.getElementById('btnSaveAndLeave').addEventListener('click', function() {
-                modal.hide();
-                // Try to find the submit button to trigger standard validation and submission
-                const submitBtn = form.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    // Clicking the submit button triggers 'submit' event (clearing flag) and handleFormSubmit
-                    submitBtn.click();
-                } else {
-                    form.submit();
-                }
-            });
-        }
-    });
-</script>
 
 <?php
 // Include footer
