@@ -95,7 +95,7 @@ try {
         FROM commissioning_reports cr
         LEFT JOIN users u ON cr.user_id = u.id
         WHERE cr.is_deleted = FALSE OR cr.is_deleted IS NULL
-        ORDER BY cr.created_at DESC LIMIT 5
+        ORDER BY cr.created_at DESC LIMIT 50
     ");
     $recentStmt->execute();
     $recentReports = $recentStmt->fetchAll(PDO::FETCH_ASSOC);

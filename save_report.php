@@ -885,7 +885,12 @@ try {
             // First, delete old String Measurement entries to avoid duplicates in report_equipment
             $stmt = $pdo->prepare("DELETE FROM report_equipment WHERE report_id = ? AND equipment_type = 'String Measurement'");
             safeExecute($stmt, [$reportId]);
-            error_log("[STRING_SAVE] Deleted old string measurements from report_equipment");
+
+            // Clean up structured table as well to prevent orphaned/ghost records if index mappings changed
+            $stmt = $pdo->prepare("DELETE FROM mppt_string_measurements WHERE report_id = ?");
+            safeExecute($stmt, [$reportId]);
+
+            error_log("[STRING_SAVE] Deleted old string measurements from report_equipment and mppt_string_measurements");
 
             // Also ensure mppt_string_measurements array is initialized; we'll upsert per-entry below
 
@@ -931,12 +936,16 @@ try {
 
                 // Also persist into mppt_string_measurements (upsert) for consistency across load paths
                 try {
-                    $inverterIndex = 0;
-                    if (!empty($invertersList) && $inverterId !== '') {
-                        foreach ($invertersList as $ii => $inv) {
-                            if ((string)($inv['model_id'] ?? '') === (string)$inverterId) {
-                                $inverterIndex = $ii;
-                                break;
+                    $inverterIndex = isset($string['inverter_index']) && $string['inverter_index'] !== null ? intval($string['inverter_index']) : null;
+
+                    if ($inverterIndex === null) {
+                        $inverterIndex = 0;
+                        if (!empty($invertersList) && $inverterId !== '') {
+                            foreach ($invertersList as $ii => $inv) {
+                                if ((string)($inv['model_id'] ?? '') === (string)$inverterId) {
+                                    $inverterIndex = $ii;
+                                    break;
+                                }
                             }
                         }
                     }

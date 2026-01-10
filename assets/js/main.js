@@ -1143,6 +1143,8 @@ function initModulesTable() {
         modelSelect.addEventListener('change', function () {
             const selectedOption = this.options[this.selectedIndex];
             const modelId = this.value;
+            const powerSelect = document.getElementById('new_module_power');
+
             if (modelId) {
                 // Fetch power options for the selected model
                 fetch((window.BASE_URL || "") + `ajax/get_module_power.php?model_id=${modelId}`)
@@ -1151,13 +1153,35 @@ function initModulesTable() {
                         // Store power options in a global variable for later use
                         window.currentPowerOptions = modelData.power_options || null;
                         console.log('DEBUG: Power options loaded for model:', modelId, window.currentPowerOptions);
+
+                        // Populate power dropdown
+                        if (powerSelect) {
+                            powerSelect.innerHTML = '<option value="">Select Power...</option>';
+                            if (window.currentPowerOptions) {
+                                const options = window.currentPowerOptions.split(',');
+                                options.forEach(option => {
+                                    const val = option.trim();
+                                    powerSelect.innerHTML += `<option value="${val}">${val} W</option>`;
+                                });
+                                // Select first option by default
+                                if (options.length > 0) {
+                                    powerSelect.value = options[0].trim();
+                                }
+                            }
+                        }
                     })
                     .catch(error => {
                         console.error('Error fetching power options:', error);
                         window.currentPowerOptions = null;
+                        if (powerSelect) {
+                            powerSelect.innerHTML = '<option value="">Error!</option>';
+                        }
                     });
             } else {
                 window.currentPowerOptions = null;
+                if (powerSelect) {
+                    powerSelect.innerHTML = '<option value="">Select Power...</option>';
+                }
             }
         });
     }
@@ -2325,12 +2349,14 @@ function loadEquipmentBrands(type, targetElement) {
 function addModuleToTable() {
     const brandSelect = document.getElementById('new_module_brand');
     const modelSelect = document.getElementById('new_module_model');
+    const powerSelect = document.getElementById('new_module_power');
     const quantityInput = document.getElementById('new_module_quantity');
     const statusSelect = document.getElementById('new_module_status');
 
     // Get the values
     const brandId = brandSelect.value;
     const modelId = modelSelect.value;
+    const powerRating = powerSelect ? powerSelect.value : '';
     const brandText = brandSelect.options[brandSelect.selectedIndex]?.text || '';
     const modelText = modelSelect.options[modelSelect.selectedIndex]?.text || '';
     const quantity = quantityInput.value;
@@ -2338,109 +2364,68 @@ function addModuleToTable() {
     const statusText = statusSelect.options[statusSelect.selectedIndex]?.text || '';
 
     // Validate required fields
-    if (!brandId || !modelId || !quantity) {
-        customAlert('Please select brand, model and quantity', 'warning');
+    if (!brandId || !modelId || !quantity || !powerRating) {
+        customAlert('Please select brand, model, power and quantity', 'warning');
         return;
     }
 
-    // Fetch module power data directly from database
-    fetch((window.BASE_URL || "") + `ajax/get_module_power.php?model_id=${modelId}`)
-        .then(response => response.json())
-        .then(modelData => {
-            // Create module object with power data from database
-            const moduleData = {
-                brand_id: brandId,
-                brand_name: brandText,
-                model_id: modelId,
-                model_name: modelText,
-                quantity: quantity,
-                status: status,
-                status_text: statusText,
-                datasheet_url: '',  // Add empty datasheet_url property
-                power_rating: modelData.power_options ? parseInt(modelData.power_options.split(',')[0].trim()) : 0,
-                power_options: modelData.power_options || null
-            };
+    // Create module object
+    const moduleData = {
+        brand_id: brandId,
+        brand_name: brandText,
+        model_id: modelId,
+        model_name: modelText,
+        quantity: quantity,
+        status: status,
+        status_text: statusText,
+        datasheet_url: '',  // Add empty datasheet_url property
+        power_rating: parseInt(powerRating),
+        power_options: window.currentPowerOptions || powerRating
+    };
 
-            // Check if we have a report ID to save to database
-            const reportId = getReportId();
+    // Check if we have a report ID to save to database
+    const reportId = getReportId();
 
-            if (reportId) {
-                // PROGRESSIVE SAVING: Save to database immediately
-                const dbData = {
-                    pv_module_brand_id: brandId,
-                    pv_module_model_id: modelId,
-                    quantity: quantity,
-                    deployment_status: status,
-                    power_rating: moduleData.power_rating
-                };
+    if (reportId) {
+        // PROGRESSIVE SAVING: Save to database immediately
+        const dbData = {
+            pv_module_brand_id: brandId,
+            pv_module_model_id: modelId,
+            quantity: quantity,
+            deployment_status: status,
+            power_rating: moduleData.power_rating
+        };
 
-                // If editing, add the module_id
-                if (editingModuleIndex >= 0 && modulesList[editingModuleIndex].id) {
-                    dbData.module_id = modulesList[editingModuleIndex].id;
+        // If editing, add the module_id
+        if (editingModuleIndex >= 0 && modulesList[editingModuleIndex].id) {
+            dbData.module_id = modulesList[editingModuleIndex].id;
+        }
+
+        saveModuleToDb(dbData)
+            .then(result => {
+                // Add module_id to the local object for future updates
+                if (!moduleData.id) {
+                    moduleData.id = result.module_id;
                 }
-
-                saveModuleToDb(dbData)
-                    .then(result => {
-                        // Add module_id to the local object for future updates
-                        if (!moduleData.id) {
-                            moduleData.id = result.module_id;
-                        }
-
-                        // Add or update module in the list
-                        if (editingModuleIndex >= 0) {
-                            modulesList[editingModuleIndex] = moduleData;
-                            showNotification('Module updated in database', 'success');
-                            editingModuleIndex = -1;
-                        } else {
-                            modulesList.push(moduleData);
-                            showNotification('Module saved to database', 'success');
-                        }
-
-                        // Reset form
-                        brandSelect.value = '';
-                        modelSelect.innerHTML = '<option value="">Select Model...</option>';
-                        quantityInput.value = '';
-                        statusSelect.value = 'new';
-
-                        // Reset button text and style
-                        const addModuleBtn = document.getElementById('add-module-btn');
-                        if (addModuleBtn) {
-                            addModuleBtn.innerHTML = '<i class="fas fa-plus"></i> Add Module';
-                            addModuleBtn.classList.remove('btn-warning');
-                            addModuleBtn.classList.add('btn-success');
-                        }
-
-                        // Update the table
-                        updateModulesTable();
-
-                        // Update hidden field with the data
-                        document.getElementById('modules_data').value = JSON.stringify(modulesList);
-                    })
-                    .catch(error => {
-                        console.error('Error saving module to database:', error);
-                        customAlert('Error saving module: ' + error.message, 'error');
-                    });
-            } else {
-                // NO REPORT ID: Fall back to local array (for new reports before save)
-                console.warn('No report ID - saving locally only');
 
                 // Add or update module in the list
                 if (editingModuleIndex >= 0) {
                     modulesList[editingModuleIndex] = moduleData;
-                    showNotification('Module updated (local)', 'info');
+                    showNotification('Module updated in database', 'success');
                     editingModuleIndex = -1;
                 } else {
                     modulesList.push(moduleData);
-                    showNotification('Module added (will save after creating report)', 'info');
+                    showNotification('Module saved to database', 'success');
                 }
 
                 // Reset form
                 brandSelect.value = '';
                 modelSelect.innerHTML = '<option value="">Select Model...</option>';
-                quantityInput.value = '';
+                if (powerSelect) powerSelect.innerHTML = '<option value="">Select Power...</option>';
+                quantityInput.value = '1';
                 statusSelect.value = 'new';
 
-                // Reset button
+                // Reset button text and style
                 const addModuleBtn = document.getElementById('add-module-btn');
                 if (addModuleBtn) {
                     addModuleBtn.innerHTML = '<i class="fas fa-plus"></i> Add Module';
@@ -2450,13 +2435,47 @@ function addModuleToTable() {
 
                 // Update the table
                 updateModulesTable();
+
+                // Update hidden field with the data
                 document.getElementById('modules_data').value = JSON.stringify(modulesList);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching power options:', error);
-            customAlert('Error loading module power data. Please try again.', 'error');
-        });
+            })
+            .catch(error => {
+                console.error('Error saving module to database:', error);
+                customAlert('Error saving module: ' + error.message, 'error');
+            });
+    } else {
+        // NO REPORT ID: Fall back to local array (for new reports before save)
+        console.warn('No report ID - saving locally only');
+
+        // Add or update module in the list
+        if (editingModuleIndex >= 0) {
+            modulesList[editingModuleIndex] = moduleData;
+            showNotification('Module updated (local)', 'info');
+            editingModuleIndex = -1;
+        } else {
+            modulesList.push(moduleData);
+            showNotification('Module added (will save after creating report)', 'info');
+        }
+
+        // Reset form
+        brandSelect.value = '';
+        modelSelect.innerHTML = '<option value="">Select Model...</option>';
+        if (powerSelect) powerSelect.innerHTML = '<option value="">Select Power...</option>';
+        quantityInput.value = '1';
+        statusSelect.value = 'new';
+
+        // Reset button
+        const addModuleBtn = document.getElementById('add-module-btn');
+        if (addModuleBtn) {
+            addModuleBtn.innerHTML = '<i class="fas fa-plus"></i> Add Module';
+            addModuleBtn.classList.remove('btn-warning');
+            addModuleBtn.classList.add('btn-success');
+        }
+
+        // Update the table
+        updateModulesTable();
+        document.getElementById('modules_data').value = JSON.stringify(modulesList);
+    }
 }
 
 /**
@@ -2503,39 +2522,14 @@ function updateModulesTable() {
                 </button>`;
         }
 
-        // Generate power cell (always show dropdown)
-        let powerCell = '';
-        const currentPower = module.power_rating || 0;
-
-        if (module.power_options) {
-            // Use available power options
-            const options = module.power_options.split(',');
-            powerCell = `<select class="form-select form-select-sm power-select" data-index="${index}">`;
-            options.forEach(option => {
-                const selected = (parseInt(option.trim()) === currentPower) ? 'selected' : '';
-                powerCell += `<option value="${option.trim()}" ${selected}>${option.trim()} W</option>`;
-            });
-            powerCell += '</select>';
-        } else {
-            // No power options available, create dropdown with current value and some defaults
-            const defaultOptions = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-            if (currentPower > 0 && !defaultOptions.includes(currentPower)) {
-                defaultOptions.unshift(currentPower); // Add current value as first option
-            }
-
-            powerCell = `<select class="form-select form-select-sm power-select" data-index="${index}">`;
-            defaultOptions.forEach(option => {
-                const selected = (option === currentPower) ? 'selected' : '';
-                powerCell += `<option value="${option}" ${selected}>${option} W</option>`;
-            });
-            powerCell += '</select>';
-        }
+        // Generate power text (moved outside table as dropdown)
+        const powerText = module.power_rating ? `${module.power_rating} W` : '-';
 
         row.innerHTML = `
             <td>${module.brand_name}</td>
             <td>${module.model_name}</td>
+            <td>${powerText}</td>
             <td>${module.quantity}</td>
-            <td>${powerCell}</td>
             <td>${module.status_text}</td>
             <td class="text-center">${datasheetBtn}</td>
             <td class="text-center">
@@ -2650,16 +2644,6 @@ function updateModulesTable() {
         });
     });
 
-    // Add event listener for power select dropdowns
-    document.querySelectorAll('.power-select').forEach(select => {
-        select.addEventListener('change', function () {
-            const index = parseInt(this.getAttribute('data-index'));
-            const newPower = parseInt(this.value);
-            modulesList[index].power_rating = newPower;
-            updateModulesTable(); // Refresh table to update totals and installed power
-        });
-    });
-
     document.querySelectorAll('.add-datasheet[data-type="module"]').forEach(btn => {
         btn.addEventListener('click', function () {
             const index = parseInt(this.getAttribute('data-index'));
@@ -2734,6 +2718,19 @@ function editModule(index) {
                         .then(modelData => {
                             window.currentPowerOptions = modelData.power_options || null;
                             console.log('DEBUG: Power options loaded for editing model:', module.model_id, window.currentPowerOptions);
+
+                            const powerSelect = document.getElementById('new_module_power');
+                            if (powerSelect) {
+                                powerSelect.innerHTML = '<option value="">Select Power...</option>';
+                                if (window.currentPowerOptions) {
+                                    const options = window.currentPowerOptions.split(',');
+                                    options.forEach(option => {
+                                        const val = option.trim();
+                                        powerSelect.innerHTML += `<option value="${val}">${val} W</option>`;
+                                    });
+                                    powerSelect.value = module.power_rating;
+                                }
+                            }
                         })
                         .catch(error => {
                             console.error('Error fetching power options for editing:', error);
@@ -2754,6 +2751,19 @@ function editModule(index) {
                         .then(modelData => {
                             window.currentPowerOptions = modelData.power_options || null;
                             console.log('DEBUG: Power options loaded for editing model:', module.model_id, window.currentPowerOptions);
+
+                            const powerSelect = document.getElementById('new_module_power');
+                            if (powerSelect) {
+                                powerSelect.innerHTML = '<option value="">Select Power...</option>';
+                                if (window.currentPowerOptions) {
+                                    const options = window.currentPowerOptions.split(',');
+                                    options.forEach(option => {
+                                        const val = option.trim();
+                                        powerSelect.innerHTML += `<option value="${val}">${val} W</option>`;
+                                    });
+                                    powerSelect.value = module.power_rating;
+                                }
+                            }
                         })
                         .catch(error => {
                             console.error('Error fetching power options for editing:', error);
@@ -2775,6 +2785,19 @@ function editModule(index) {
                     .then(modelData => {
                         window.currentPowerOptions = modelData.power_options || null;
                         console.log('DEBUG: Power options loaded for editing model:', module.model_id, window.currentPowerOptions);
+
+                        const powerSelect = document.getElementById('new_module_power');
+                        if (powerSelect) {
+                            powerSelect.innerHTML = '<option value="">Select Power...</option>';
+                            if (window.currentPowerOptions) {
+                                const options = window.currentPowerOptions.split(',');
+                                options.forEach(option => {
+                                    const val = option.trim();
+                                    powerSelect.innerHTML += `<option value="${val}">${val} W</option>`;
+                                });
+                                powerSelect.value = module.power_rating;
+                            }
+                        }
                     })
                     .catch(error => {
                         console.error('Error fetching power options for editing:', error);
